@@ -1,0 +1,26 @@
+{
+  "name": "bonos-thepalace",
+  "version": "1.0.0",
+  "description": "Bot de Discord para calcular bonos de empleados basado en ventas",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "bonos",
+    "empleados",
+    "ventas"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
