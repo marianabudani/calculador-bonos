@@ -1,0 +1,67 @@
+{
+  "employees": {
+    "FCK11471": {
+      "dni": "FCK11471",
+      "name": "Bruce Connors",
+      "weeklyData": {}
+    },
+    "ZIF02683": {
+      "dni": "ZIF02683",
+      "name": "Andrea D'Castello",
+      "weeklyData": {}
+    },
+    "KCW84800": {
+      "dni": "KCW84800",
+      "name": "Ray Teller",
+      "weeklyData": {}
+    },
+    "UDT92869": {
+      "dni": "UDT92869",
+      "name": "Eazy",
+      "weeklyData": {}
+    },
+    "VPP68128": {
+      "dni": "VPP68128",
+      "name": "Carmilla Falcone",
+      "weeklyData": {}
+    },
+    "IKZ82657": {
+      "dni": "IKZ82657",
+      "name": "Antonio Padilla",
+      "weeklyData": {}
+    },
+    "HZU96749": {
+      "dni": "HZU96749",
+      "name": "Trent Watson",
+      "weeklyData": {}
+    },
+    "VXC05431": {
+      "dni": "VXC05431",
+      "name": "Renata Ruiz",
+      "weeklyData": {}
+    },
+    "RMI71318": {
+      "dni": "RMI71318",
+      "name": "Marcos Rodriguez",
+      "weeklyData": {}
+    },
+    "ZYN98781": {
+      "dni": "ZYN98781",
+      "name": "Sophie  legaspie",
+      "weeklyData": {}
+    },
+    "HQJ49839": {
+      "dni": "HQJ49839",
+      "name": "Alex Heredia",
+      "weeklyData": {}
+    },
+    "QEG73999": {
+      "dni": "QEG73999",
+      "name": "Xavi Cley",
+      "weeklyData": {}
+    }
+  },
+  "bonusPercentage": 10,
+  "currentWeek": "2025-34",
+  "savedAt": "2025-08-23T20:11:19.972Z"
+}

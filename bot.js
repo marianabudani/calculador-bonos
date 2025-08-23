@@ -14,7 +14,7 @@ class EmployeeBonusBot {
         });
         this.token = token;
         this.employees = new Map(); // DNI -> { name, weeklyData: Map<weekKey, salesData> }
-        this.bonusPercentage = 10; 
+        this.bonusPercentage = 10;
         this.currentWeek = this.getCurrentWeekKey();
         
         // Configuración de canales
@@ -120,7 +120,8 @@ class EmployeeBonusBot {
 
     async parseLine(line) {
         const patterns = {
-            serviceEntry: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+)\*\*\s+ha entrado en servicio/,
+            // Mejorado para capturar mejor los nombres
+            serviceEntry: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha entrado en servicio/,
             invoiceSent: /^\*\*\[([A-Z]{3}\d+)\]\*\*\s+ha enviado una factura\s+`\$(\d+)\s+\(([^)]+)\)`/,
             invoicePaid: /^\*\*[^*]+\*\*\s+ha pagado una factura\s+`\$(\d+)\s+\(([^)]+)\)`\s+de\s+\*\*\[([A-Z]{3}\d+)\]\**/
         };
@@ -131,7 +132,9 @@ class EmployeeBonusBot {
         const serviceMatch = line.match(patterns.serviceEntry);
         if (serviceMatch) {
             const [, dni, name] = serviceMatch;
-            this.registerEmployee(dni, name.trim());
+            const cleanName = name.trim().replace(/\*+/g, ''); // Limpiar asteriscos extra
+            this.registerEmployee(dni, cleanName);
+            console.log(`🔍 Empleado procesado: "${cleanName}" (${dni})`);
             return;
         }
 
@@ -139,6 +142,7 @@ class EmployeeBonusBot {
         if (invoiceMatch) {
             const [, dni, amount] = invoiceMatch;
             this.addInvoice(dni, parseInt(amount), 'sent');
+            console.log(`📄 Factura enviada: ${dni} - ${amount}`);
             return;
         }
 
@@ -146,6 +150,7 @@ class EmployeeBonusBot {
         if (paidMatch) {
             const [, amount, description, dni] = paidMatch;
             this.markInvoiceAsPaid(dni, parseInt(amount));
+            console.log(`💰 Factura pagada: ${dni} - ${amount}`);
             return;
         }
     }
@@ -175,6 +180,7 @@ class EmployeeBonusBot {
     }
 
     addInvoice(dni, amount, status = 'sent') {
+        // Si el empleado no existe, crearlo con nombre temporal
         if (!this.employees.has(dni)) {
             this.registerEmployee(dni, `Empleado ${dni}`);
         }
@@ -188,7 +194,10 @@ class EmployeeBonusBot {
     }
 
     markInvoiceAsPaid(dni, amount) {
-        if (!this.employees.has(dni)) return;
+        if (!this.employees.has(dni)) {
+            // Crear empleado si no existe
+            this.registerEmployee(dni, `Empleado ${dni}`);
+        }
         
         const weekData = this.getEmployeeWeekData(dni, this.currentWeek);
         
@@ -201,14 +210,431 @@ class EmployeeBonusBot {
             weekData.totalPaid += amount;
             
             const employee = this.employees.get(dni);
-            console.log(`Factura pagada (Semana ${this.currentWeek}): ${employee.name} - $${amount}`);
+            console.log(`Factura pagada (Semana ${this.currentWeek}): ${employee.name} - ${amount}`);
+        } else {
+            // Si no encuentra la factura pendiente, crear una nueva marcada como pagada
+            weekData.invoices.push({
+                amount: amount,
+                status: 'paid',
+                timestamp: new Date()
+            });
+            weekData.totalPaid += amount;
+            
+            const employee = this.employees.get(dni);
+            console.log(`Factura pagada directa (Semana ${this.currentWeek}): ${employee.name} - ${amount}`);
         }
     }
 
-    async handleCommand(message) {
-        const args = message.content.slice(1).trim().split(/ +/);
-        const command = args[0].toLowerCase();
+  async scanChannelHistory(channel, messageCount = 100) {
+    try {
+        console.log(`🔍 Escaneando ${messageCount} mensajes del canal ${channel.name}...`);
+        
+        let allMessages = [];
+        let lastMessageId = null;
+        const maxPerRequest = 100; // Límite máximo de la API de Discord
+        
+        // Calcular cuántas peticiones necesitamos
+        const totalRequests = Math.ceil(messageCount / maxPerRequest);
+        
+        for (let i = 0; i < totalRequests; i++) {
+            // Calcular cuántos mensajes solicitar en esta petición
+            const remainingMessages = messageCount - allMessages.length;
+            const currentLimit = Math.min(maxPerRequest, remainingMessages);
+            
+            console.log(`📄 Petición ${i + 1}/${totalRequests} - Solicitando ${currentLimit} mensajes...`);
+            
+            // Configurar opciones para la petición
+            const fetchOptions = { 
+                limit: currentLimit 
+            };
+            
+            // Si no es la primera petición, usar el ID del último mensaje como punto de partida
+            if (lastMessageId) {
+                fetchOptions.before = lastMessageId;
+            }
+            
+            // Hacer la petición
+            const messages = await channel.messages.fetch(fetchOptions);
+            
+            if (messages.size === 0) {
+                console.log('🔚 No hay más mensajes disponibles');
+                break;
+            }
+            
+            // Convertir a array y agregar a la colección total
+            const messagesArray = Array.from(messages.values());
+            allMessages.push(...messagesArray);
+            
+            // Actualizar el ID del último mensaje para la siguiente petición
+            lastMessageId = messagesArray[messagesArray.length - 1].id;
+            
+            console.log(`✅ Obtenidos ${messages.size} mensajes (Total: ${allMessages.length})`);
+            
+            // Pequeña pausa entre peticiones para evitar rate limiting
+            if (i < totalRequests - 1) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        
+        console.log(`📊 Escaneo completado: ${allMessages.length} mensajes obtenidos`);
+        
+        // Aquí procesas los mensajes como lo hacías antes
+        const bonusData = this.processBonusMessages(allMessages);
+        
+        return {
+            totalMessages: allMessages.length,
+            bonusData: bonusData
+        };
+        
+    } catch (error) {
+        console.error('❌ Error al escanear el canal:', error);
+        throw error;
+    }
+}
 
+// Función mejorada para procesar mensajes de bonos
+processBonusMessages(messages) {
+    const bonusData = {
+        totalBonuses: 0,
+        employeeBonuses: new Map(),
+        processedMessages: 0,
+        employeesFound: 0,
+        invoicesProcessed: 0,
+        dateRange: {
+            oldest: null,
+            newest: null
+        }
+    };
+    
+    console.log(`🔍 Procesando ${messages.length} mensajes para extraer datos de bonos...`);
+    
+    // Ordenar mensajes por fecha (más antiguos primero) para procesar en orden cronológico
+    const sortedMessages = messages.sort((a, b) => a.createdAt - b.createdAt);
+    
+    sortedMessages.forEach((message, index) => {
+        // Actualizar rango de fechas
+        if (!bonusData.dateRange.oldest || message.createdAt < bonusData.dateRange.oldest) {
+            bonusData.dateRange.oldest = message.createdAt;
+        }
+        if (!bonusData.dateRange.newest || message.createdAt > bonusData.dateRange.newest) {
+            bonusData.dateRange.newest = message.createdAt;
+        }
+        
+        // Procesar solo mensajes de webhook que contienen logs
+        if (message.webhookId && this.isWebhookLog(message.content)) {
+            bonusData.processedMessages++;
+            
+            // Log de progreso cada 100 mensajes
+            if (bonusData.processedMessages % 100 === 0) {
+                console.log(`📊 Procesados ${bonusData.processedMessages} mensajes de webhook...`);
+            }
+            
+            // Procesar cada línea del mensaje
+            const lines = message.content.split('\n');
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) continue;
+                
+                // Patrones mejorados para capturar nombres
+                const patterns = {
+                    // Patrón más flexible para nombres
+                    serviceEntry: /^\*\*\[([A-Z]{3}\d+)\]\s+(.+?)\*\*\s+ha entrado en servicio/,
+                    invoiceSent: /^\*\*\[([A-Z]{3}\d+)\]\*\*\s+ha enviado una factura\s+`\$(\d+)\s+\(([^)]+)\)`/,
+                    invoicePaid: /^\*\*[^*]+\*\*\s+ha pagado una factura\s+`\$(\d+)\s+\(([^)]+)\)`\s+de\s+\*\*\[([A-Z]{3}\d+)\]\**/
+                };
+                
+                // Obtener la clave de semana del mensaje
+                const messageWeek = this.getWeekKeyFromDate(message.createdAt);
+                
+                // Procesar entrada en servicio (registrar empleado)
+                const serviceMatch = trimmedLine.match(patterns.serviceEntry);
+                if (serviceMatch) {
+                    const [, dni, nameWithAsterisks] = serviceMatch;
+                    // Limpiar mejor el nombre
+                    const cleanName = nameWithAsterisks
+                        .replace(/\*+/g, '') // Quitar asteriscos
+                        .trim()
+                        .replace(/\s+/g, ' '); // Normalizar espacios
+                    
+                    console.log(`👤 Empleado encontrado: "${cleanName}" (${dni}) en línea: "${trimmedLine}"`);
+                    
+                    // Registrar tanto en datos del escaneo como en estructura principal
+                    if (!bonusData.employeeBonuses.has(dni)) {
+                        bonusData.employeeBonuses.set(dni, {
+                            name: cleanName,
+                            weeks: new Map()
+                        });
+                        bonusData.employeesFound++;
+                    } else {
+                        // Actualizar el nombre si es mejor que el actual
+                        const existing = bonusData.employeeBonuses.get(dni);
+                        if (cleanName.length > existing.name.length && !cleanName.includes('Empleado')) {
+                            existing.name = cleanName;
+                        }
+                    }
+                    
+                    // También registrar en la estructura principal del bot
+                    this.registerEmployee(dni, cleanName);
+                    continue;
+                }
+                
+                // Procesar factura enviada
+                const invoiceMatch = trimmedLine.match(patterns.invoiceSent);
+                if (invoiceMatch) {
+                    const [, dni, amount] = invoiceMatch;
+                    this.addInvoiceToScanData(bonusData, dni, parseInt(amount), 'sent', messageWeek, message.createdAt);
+                    
+                    // También agregar a la estructura principal
+                    this.addInvoiceToMainData(dni, parseInt(amount), 'sent', messageWeek, message.createdAt);
+                    
+                    bonusData.invoicesProcessed++;
+                    continue;
+                }
+                
+                // Procesar factura pagada
+                const paidMatch = trimmedLine.match(patterns.invoicePaid);
+                if (paidMatch) {
+                    const [, amount, description, dni] = paidMatch;
+                    this.addInvoiceToScanData(bonusData, dni, parseInt(amount), 'paid', messageWeek, message.createdAt);
+                    
+                    // También agregar a la estructura principal
+                    this.addInvoiceToMainData(dni, parseInt(amount), 'paid', messageWeek, message.createdAt);
+                    
+                    bonusData.invoicesProcessed++;
+                    continue;
+                }
+            }
+        }
+    });
+    
+    // Calcular bonos totales
+    for (const [dni, employeeData] of bonusData.employeeBonuses) {
+        for (const [week, weekData] of employeeData.weeks) {
+            const bonus = Math.round((weekData.totalPaid * this.bonusPercentage) / 100);
+            bonusData.totalBonuses += bonus;
+        }
+    }
+    
+    console.log(`📊 Procesamiento completado: ${bonusData.processedMessages} mensajes de webhook, ${bonusData.employeesFound} empleados, ${bonusData.invoicesProcessed} facturas`);
+    
+    return bonusData;
+}
+
+// Nueva función para agregar facturas a la estructura principal
+addInvoiceToMainData(dni, amount, status, weekKey, timestamp) {
+    // Asegurar que el empleado existe
+    if (!this.employees.has(dni)) {
+        this.registerEmployee(dni, `Empleado ${dni}`);
+    }
+    
+    // Obtener datos de la semana
+    const weekData = this.getEmployeeWeekData(dni, weekKey);
+    
+    if (status === 'sent') {
+        // Verificar si ya existe esta factura para evitar duplicados
+        const existingInvoice = weekData.invoices.find(inv => 
+            inv.amount === amount && inv.timestamp && 
+            Math.abs(inv.timestamp.getTime() - timestamp.getTime()) < 60000 // 1 minuto de diferencia
+        );
+        
+        if (!existingInvoice) {
+            weekData.invoices.push({
+                amount: amount,
+                status: 'sent',
+                timestamp: timestamp
+            });
+        }
+    } else if (status === 'paid') {
+        // Buscar factura pendiente para marcar como pagada
+        const pendingInvoice = weekData.invoices.find(inv => 
+            inv.amount === amount && inv.status === 'sent'
+        );
+        
+        if (pendingInvoice) {
+            pendingInvoice.status = 'paid';
+        } else {
+            // Crear factura directamente pagada si no se encuentra pendiente
+            weekData.invoices.push({
+                amount: amount,
+                status: 'paid',
+                timestamp: timestamp
+            });
+        }
+        
+        // Actualizar total pagado
+        weekData.totalPaid += amount;
+    }
+}
+
+// Función mejorada para escanear con más profundidad
+async scanChannelHistory(channel, messageCount = 100) {
+    try {
+        console.log(`🔍 Escaneando ${messageCount} mensajes del canal ${channel.name}...`);
+        console.log(`📅 Intentando obtener mensajes desde el ${new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES')} hasta hoy`);
+        
+        let allMessages = [];
+        let lastMessageId = null;
+        const maxPerRequest = 100;
+        
+        const totalRequests = Math.ceil(messageCount / maxPerRequest);
+        
+        for (let i = 0; i < totalRequests; i++) {
+            const remainingMessages = messageCount - allMessages.length;
+            const currentLimit = Math.min(maxPerRequest, remainingMessages);
+            
+            console.log(`📄 Petición ${i + 1}/${totalRequests} - Solicitando ${currentLimit} mensajes...`);
+            
+            const fetchOptions = { 
+                limit: currentLimit 
+            };
+            
+            if (lastMessageId) {
+                fetchOptions.before = lastMessageId;
+            }
+            
+            try {
+                const messages = await channel.messages.fetch(fetchOptions);
+                
+                if (messages.size === 0) {
+                    console.log('🔚 No hay más mensajes disponibles');
+                    break;
+                }
+                
+                const messagesArray = Array.from(messages.values());
+                allMessages.push(...messagesArray);
+                
+                lastMessageId = messagesArray[messagesArray.length - 1].id;
+                
+                // Mostrar fecha del mensaje más antiguo obtenido
+                const oldestMessage = messagesArray[messagesArray.length - 1];
+                console.log(`✅ Obtenidos ${messages.size} mensajes (Total: ${allMessages.length}) - Más antiguo: ${oldestMessage.createdAt.toLocaleDateString('es-ES')}`);
+                
+                // Pausa más larga para evitar rate limits
+                if (i < totalRequests - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            } catch (fetchError) {
+                console.error(`❌ Error en petición ${i + 1}:`, fetchError.message);
+                break;
+            }
+        }
+        
+        console.log(`📊 Escaneo completado: ${allMessages.length} mensajes obtenidos`);
+        
+        if (allMessages.length > 0) {
+            const oldestMsg = allMessages[allMessages.length - 1];
+            const newestMsg = allMessages[0];
+            console.log(`📅 Rango: ${oldestMsg.createdAt.toLocaleDateString('es-ES')} a ${newestMsg.createdAt.toLocaleDateString('es-ES')}`);
+        }
+        
+        // Procesar mensajes
+        const bonusData = this.processBonusMessages(allMessages);
+        
+        return {
+            totalMessages: allMessages.length,
+            bonusData: bonusData
+        };
+        
+    } catch (error) {
+        console.error('❌ Error al escanear el canal:', error);
+        throw error;
+    }
+}
+
+// Función auxiliar para obtener clave de semana desde una fecha
+getWeekKeyFromDate(date) {
+    const startOfYear = new Date(date.getFullYear(), 0, 1);
+    const days = Math.floor((date - startOfYear) / (24 * 60 * 60 * 1000));
+    
+    const dayOfWeek = date.getDay();
+    const mondayAdjustment = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const mondayOfThisWeek = new Date(date);
+    mondayOfThisWeek.setDate(date.getDate() + mondayAdjustment);
+    
+    const weekNumber = Math.ceil(((mondayOfThisWeek - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+    return `${date.getFullYear()}-${weekNumber}`;
+}
+
+// Función auxiliar para agregar facturas a los datos del escaneo
+addInvoiceToScanData(bonusData, dni, amount, status, weekKey, timestamp) {
+    // Crear empleado si no existe
+    if (!bonusData.employeeBonuses.has(dni)) {
+        bonusData.employeeBonuses.set(dni, {
+            name: `Empleado ${dni}`,
+            weeks: new Map()
+        });
+        bonusData.employeesFound++;
+    }
+    
+    const employee = bonusData.employeeBonuses.get(dni);
+    
+    // Crear datos de semana si no existen
+    if (!employee.weeks.has(weekKey)) {
+        employee.weeks.set(weekKey, {
+            invoices: [],
+            totalPaid: 0
+        });
+    }
+    
+    const weekData = employee.weeks.get(weekKey);
+    
+    if (status === 'sent') {
+        // Agregar factura enviada
+        weekData.invoices.push({
+            amount: amount,
+            status: 'sent',
+            timestamp: timestamp
+        });
+    } else if (status === 'paid') {
+        // Buscar factura pendiente para marcar como pagada
+        const pendingInvoice = weekData.invoices.find(inv => 
+            inv.amount === amount && inv.status === 'sent'
+        );
+        
+        if (pendingInvoice) {
+            pendingInvoice.status = 'paid';
+        } else {
+            // Crear factura directamente pagada
+            weekData.invoices.push({
+                amount: amount,
+                status: 'paid',
+                timestamp: timestamp
+            });
+        }
+        
+        weekData.totalPaid += amount;
+    }
+}
+
+    // Funciones auxiliares para el escaneo
+    getTotalInvoices() {
+        let total = 0;
+        for (const [dni, employee] of this.employees) {
+            for (const weekData of employee.weeklyData.values()) {
+                total += weekData.invoices.length;
+            }
+        }
+        return total;
+    }
+
+    getTotalPaidInvoices() {
+        let total = 0;
+        for (const [dni, employee] of this.employees) {
+            for (const weekData of employee.weeklyData.values()) {
+                total += weekData.invoices.filter(inv => inv.status === 'paid').length;
+            }
+        }
+        return total;
+    }
+
+async handleCommand(message) {
+    const args = message.content.slice(1).trim().split(/ +/);
+    const command = args[0].toLowerCase();
+    
+    try {
+        console.log(`🤖 Procesando comando: ${command} con args:`, args);
+        
         switch (command) {
             case 'bonos':
                 await this.calculateWeeklyBonuses(message);
@@ -254,9 +680,267 @@ class EmployeeBonusBot {
             case 'ayuda':
                 await this.showHelp(message);
                 break;
+                
+            case 'scanfecha':
+            try {
+                const fechaInicioStr = args[1]; // formato DD/MM/YYYY
+                const fechaFinStr = args[2];
+                
+                if (!fechaInicioStr || !fechaFinStr) {
+                    return message.reply('❌ Uso: `!scanfecha DD/MM/AAAA DD/MM/AAAA`\nEjemplo: `!scanfecha 20/08/2025 23/08/2025`');
+                }
+                // Parsear fechas
+                const [diaInicio, mesInicio, añoInicio] = fechaInicioStr.split('/').map(Number);
+                const [diaFin, mesFin, añoFin] = fechaFinStr.split('/').map(Number);
+                
+                if (isNaN(diaInicio) || isNaN(mesInicio) || isNaN(añoInicio) || 
+                    isNaN(diaFin) || isNaN(mesFin) || isNaN(añoFin)) {
+                    return message.reply('❌ Formato de fecha inválido. Usa DD/MM/AAAA');
+                }
+                
+                const fechaInicio = new Date(añoInicio, mesInicio - 1, diaInicio, 0, 0, 0);
+                const fechaFin = new Date(añoFin, mesFin - 1, diaFin, 23, 59, 59);
+                
+                if (fechaInicio > fechaFin) {
+                    return message.reply('❌ La fecha de inicio no puede ser mayor que la fecha de fin');
+                }
+                
+                // Obtener el canal del webhook desde el .env
+                const webhookChannelId = process.env.CANAL_WEBHOOK;
+                
+                if (!webhookChannelId) {
+                    return message.reply('❌ No se ha configurado CANAL_WEBHOOK en el archivo .env');
+                }
+
+                let targetChannel;
+                try {
+                    targetChannel = await message.guild.channels.fetch(webhookChannelId);
+                } catch (error) {
+                    return message.reply(`❌ No se pudo encontrar el canal con ID: ${webhookChannelId}`);
+                }
+
+                if (!targetChannel) {
+                    return message.reply('❌ No se pudo determinar el canal a escanear');
+                }
+
+                // Verificar permisos
+                const botPermissions = targetChannel.permissionsFor(message.guild.members.me);
+                if (!botPermissions || !botPermissions.has(['ViewChannel', 'ReadMessageHistory'])) {
+                    return message.reply('❌ No tengo permisos para leer el historial de ese canal');
+                }
+                
+                console.log(`🎯 Escaneando por fecha: ${fechaInicio.toLocaleDateString('es-ES')} a ${fechaFin.toLocaleDateString('es-ES')}`);
+                
+                const startMsg = await message.reply(`🔄 Iniciando escaneo desde ${fechaInicioStr} hasta ${fechaFinStr} en ${targetChannel.name}...`);
+                
+                try {
+                    const result = await this.scanChannelByDate(targetChannel, fechaInicio, fechaFin);
+                    
+                    // Crear embed con resultados
+                    const embed = new EmbedBuilder()
+                        .setTitle('✅ Escaneo por Fechas Completado')
+                        .setColor('#00ff00')
+                        .addFields(
+                            {
+                                name: '📅 Rango de Fechas',
+                                value: `${fechaInicio.toLocaleDateString('es-ES')} - ${fechaFin.toLocaleDateString('es-ES')}`,
+                                inline: true
+                            },
+                            {
+                                name: '📊 Mensajes Procesados',
+                                value: `${result.totalMessages} mensajes escaneados\n${result.bonusData.processedMessages} mensajes de webhook procesados`,
+                                inline: true
+                            },
+                            {
+                                name: '👥 Empleados Encontrados',
+                                value: `${result.bonusData.employeesFound} empleados`,
+                                inline: true
+                            },
+                            {
+                                name: '📄 Facturas Procesadas',
+                                value: `${result.bonusData.invoicesProcessed} facturas`,
+                                inline: true
+                            },
+                            {
+                                name: '🎁 Bonos Calculados',
+                                value: `$${result.bonusData.totalBonuses} (${this.bonusPercentage}%)`,
+                                inline: true
+                            }
+                        )
+                        .setTimestamp()
+                        .setFooter({ text: `Canal: ${targetChannel.name}` });
+
+                    // Agregar información de empleados si hay pocos
+                    if (result.bonusData.employeeBonuses.size > 0 && result.bonusData.employeeBonuses.size <= 10) {
+                        let employeeList = '';
+                        for (const [dni, employeeData] of result.bonusData.employeeBonuses) {
+                            let totalPaid = 0;
+                            for (const weekData of employeeData.weeks.values()) {
+                                totalPaid += weekData.totalPaid;
+                            }
+                            const bonus = Math.round((totalPaid * this.bonusPercentage) / 100);
+                            employeeList += `**${employeeData.name}** (${dni})\n💰 $${totalPaid} → 🎁 $${bonus}\n\n`;
+                        }
+                        
+                        if (employeeList.length < 1024) {
+                            embed.addFields({
+                                name: '👤 Detalle por Empleado',
+                                value: employeeList.slice(0, 1020) + (employeeList.length > 1020 ? '...' : ''),
+                                inline: false
+                            });
+                        }
+                    }
+                    
+                    // Guardar datos automáticamente después del escaneo
+                    if (typeof this.saveDataToFile === 'function') {
+                        await this.saveDataToFile();
+                        console.log('💾 Datos guardados automáticamente');
+                    }
+                    
+                    await startMsg.edit({ content: '', embeds: [embed] });
+                    
+                } catch (error) {
+                    console.error('❌ Error durante el escaneo por fechas:', error);
+                    await startMsg.edit(`❌ Error durante el escaneo: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('❌ Error en comando scanfecha:', error);
+                await message.reply(`❌ Error al procesar el comando: ${error.message}`);
+            }
+            break;
+            case 'scan':
+            case 'escanear':
+                // Obtener el canal del webhook desde el .env
+                const webhookChannelId = process.env.CANAL_WEBHOOK;
+                
+                if (!webhookChannelId) {
+                    return message.reply('❌ No se ha configurado CANAL_WEBHOOK en el archivo .env');
+                }
+
+                let targetChannel;
+                try {
+                    // Obtener el objeto canal real usando el ID
+                    targetChannel = await message.guild.channels.fetch(webhookChannelId);
+                } catch (error) {
+                    return message.reply(`❌ No se pudo encontrar el canal con ID: ${webhookChannelId}`);
+                }
+
+                if (!targetChannel) {
+                    return message.reply('❌ No se pudo determinar el canal a escanear');
+                }
+
+                // Verificar permisos
+                const botPermissions = targetChannel.permissionsFor(message.guild.members.me);
+                if (!botPermissions || !botPermissions.has(['ViewChannel', 'ReadMessageHistory'])) {
+                    return message.reply('❌ No tengo permisos para leer el historial de ese canal');
+                }
+                
+                console.log(`🎯 Canal objetivo: ${targetChannel.name} (${targetChannel.id})`);
+                const messageCount = parseInt(args[1]) || 100;
+                if (messageCount > 1000) {
+                    return message.reply('❌ No puedo escanear más de 1000 mensajes por vez');
+                }
+                
+                const startMsg = await message.reply(`🔄 Iniciando escaneo de ${messageCount} mensajes en ${targetChannel.name}...`);
+                
+                try {
+                    const result = await this.scanChannelHistory(targetChannel, messageCount);
+                    
+                    // Crear embed con resultados detallados
+                    const embed = new EmbedBuilder()
+                        .setTitle('✅ Escaneo de Canal Completado')
+                        .setColor('#00ff00')
+                        .addFields(
+                            {
+                                name: '📊 Mensajes Procesados',
+                                value: `${result.totalMessages} mensajes escaneados\n${result.bonusData.processedMessages} mensajes de webhook procesados`,
+                                inline: true
+                            },
+                            {
+                                name: '👥 Empleados Encontrados',
+                                value: `${result.bonusData.employeesFound} empleados`,
+                                inline: true
+                            },
+                            {
+                                name: '📄 Facturas Procesadas',
+                                value: `${result.bonusData.invoicesProcessed} facturas`,
+                                inline: true
+                            },
+                            {
+                                name: '🎁 Bonos Calculados',
+                                value: `$${result.bonusData.totalBonuses} (${this.bonusPercentage}%)`,
+                                inline: true
+                            },
+                            {
+                                name: '📅 Rango de Fechas',
+                                value: result.bonusData.dateRange.oldest && result.bonusData.dateRange.newest ?
+                                    `${result.bonusData.dateRange.oldest.toLocaleDateString('es-ES')} - ${result.bonusData.dateRange.newest.toLocaleDateString('es-ES')}` :
+                                    'Sin datos de fecha',
+                                inline: true
+                            }
+                        )
+                        .setTimestamp()
+                        .setFooter({ text: `Canal: ${targetChannel.name}` });
+
+                    // Agregar información de empleados si hay pocos
+                    if (result.bonusData.employeeBonuses.size > 0 && result.bonusData.employeeBonuses.size <= 10) {
+                        let employeeList = '';
+                        for (const [dni, employeeData] of result.bonusData.employeeBonuses) {
+                            let totalPaid = 0;
+                            for (const weekData of employeeData.weeks.values()) {
+                                totalPaid += weekData.totalPaid;
+                            }
+                            const bonus = Math.round((totalPaid * this.bonusPercentage) / 100);
+                            employeeList += `**${employeeData.name}** (${dni})\n💰 $${totalPaid} → 🎁 $${bonus}\n\n`;
+                        }
+                        
+                        if (employeeList.length < 1024) { // Límite de campo de Discord
+                            embed.addFields({
+                                name: '👤 Detalle por Empleado',
+                                value: employeeList.slice(0, 1020) + (employeeList.length > 1020 ? '...' : ''),
+                                inline: false
+                            });
+                        }
+                    }
+                    
+                    // Guardar datos automáticamente después del escaneo
+                    if (typeof this.saveDataToFile === 'function') {
+                        await this.saveDataToFile();
+                        console.log('💾 Datos guardados automáticamente');
+                    }
+                    
+                    await startMsg.edit({ content: '', embeds: [embed] });
+                    
+                } catch (error) {
+                    console.error('❌ Error durante el escaneo:', error);
+                    await startMsg.edit(`❌ Error durante el escaneo: ${error.message}`);
+                }
+                break;
+                
+            default:
+                await message.reply('❓ Comando no reconocido');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error en handleCommand:', error);
+        await message.reply(`❌ Error al procesar el comando: ${error.message}`);
+    }
+}
+    async saveDataToFile() {
+        try {
+            const data = {
+                employees: Object.fromEntries(this.employees),
+                bonusPercentage: this.bonusPercentage,
+                currentWeek: this.currentWeek,
+                savedAt: new Date().toISOString()
+            };
+            
+            await fs.writeFile('./bot_data.json', JSON.stringify(data, null, 2));
+            console.log('💾 Datos guardados en bot_data.json');
+        } catch (error) {
+            console.error('❌ Error al guardar datos:', error);
         }
     }
-
     async calculateWeeklyBonuses(message) {
         await this.calculateSpecificWeekBonuses(message, this.currentWeek);
     }
@@ -587,6 +1271,7 @@ class EmployeeBonusBot {
                 { name: '!reset', value: 'Elimina todos los datos', inline: false },
                 { name: '!config', value: 'Muestra la configuración actual de canales', inline: false },
                 { name: '!setchannel', value: 'Configura canales específicos para logs o comandos', inline: false },
+                { name: '!scan [número]', value: 'Escanea mensajes anteriores del canal (ej: !scan 500)', inline: false },
                 { name: '!ayuda', value: 'Muestra esta ayuda', inline: false }
             )
             .setFooter({ text: 'Sistema de bonos semanales (Lunes a Domingo)' });
@@ -599,12 +1284,15 @@ class EmployeeBonusBot {
     }
 }
 
+// Uso del bot
+// IMPORTANTE: Cambia este token por tu token real
 if (require.main === module) {
     const botConfig = {
-        logChannelIds: [process.env.CANAL_WEBHOOD],
+        logChannelIds: [process.env.CANAL_WEBHOOK],
         commandChannelIds: [process.env.ID_CANAL_BOT],
         allowAllChannels: true
     };
+    
     const bot = new EmployeeBonusBot(process.env.DISCORD_TOKEN, botConfig);
     bot.start().catch(console.error);
 }
