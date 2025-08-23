@@ -157,12 +157,11 @@ class DataManager {
 }
 repairEmployees() {
     let repairedCount = 0;
+    const Employee = require('../models/Employee');
+    const WeeklyData = require('../models/WeeklyData');
     
     for (const [dni, employee] of this.bot.employees) {
         if (typeof employee.getWeekData !== 'function') {
-            const Employee = require('../models/Employee');
-            const WeeklyData = require('../models/WeeklyData');
-            
             const newEmployee = new Employee(dni, employee.name || `Empleado ${dni}`);
             
             if (employee.weeklyData) {
@@ -182,6 +181,7 @@ repairEmployees() {
     
     return repairedCount;
 }
+
 }
 
 module.exports = DataManager;
