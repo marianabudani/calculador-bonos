@@ -45,10 +45,13 @@ class ScanCommands {
                 return message.reply('❌ No tengo permisos para leer el historial de ese canal');
             }
             
-            const startMsg = await message.reply(`🔄 Iniciando escaneo desde ${fechaInicioStr} hasta ${fechaFinStr}...`);
+            const startMsg = await message.reply(`🔄 Iniciando escaneo desde ${fechaInicioStr} hasta ${fechaFinStr} en ${targetChannel.name}...`);
             
-            try {
-                 const result = await this.channelScanner.scanChannelByDate(targetChannel, fechaInicio, fechaFin);
+             try {
+                const result = await this.channelScanner.scanChannelByDate(targetChannel, fechaInicio, fechaFin);
+                
+                // VERIFICAR QUE syncResult EXISTE
+                const syncResult = result.syncResult || { syncedWeeks: 0, syncedInvoices: 0 };
                 
                 const dateField = {
                     name: '📅 Rango de Fechas',
@@ -56,15 +59,17 @@ class ScanCommands {
                     inline: true
                 };
                 
-                const embed = this.channelScanner.createScanEmbed(result, '✅ Escaneo por Fechas Completado', [dateField]);
+                const embed = this.channelScanner.createScanEmbed(result.bonusData, '✅ Escaneo por Fechas Completado', [dateField]);
+                
+                // Agregar información de sincronización
                 embed.addFields({
                     name: '💾 Datos Guardados',
-                    value: `Semanas: ${result.syncResult.syncedWeeks}\nFacturas: ${result.syncResult.syncedInvoices}`,
+                    value: `Semanas: ${syncResult.syncedWeeks}\nFacturas: ${syncResult.syncedInvoices}`,
                     inline: true
                 });
-                await this.addEmployeeDetails(embed, result);
                 
-                await this.bot.dataManager.saveData();
+                await this.addEmployeeDetails(embed, result.bonusData);
+                
                 await startMsg.edit({ content: '', embeds: [embed] });
                 
             } catch (error) {

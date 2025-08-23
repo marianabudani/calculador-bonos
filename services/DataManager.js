@@ -155,6 +155,33 @@ class DataManager {
     
     return { syncedCount, invoiceCount };
 }
+repairEmployees() {
+    let repairedCount = 0;
+    
+    for (const [dni, employee] of this.bot.employees) {
+        if (typeof employee.getWeekData !== 'function') {
+            const Employee = require('../models/Employee');
+            const WeeklyData = require('../models/WeeklyData');
+            
+            const newEmployee = new Employee(dni, employee.name || `Empleado ${dni}`);
+            
+            if (employee.weeklyData) {
+                for (const [weekKey, weekData] of Object.entries(employee.weeklyData)) {
+                    const weeklyData = new WeeklyData();
+                    weeklyData.invoices = weekData.invoices || [];
+                    weeklyData.totalPaid = weekData.totalPaid || 0;
+                    newEmployee.weeklyData.set(weekKey, weeklyData);
+                }
+            }
+            
+            this.bot.employees.set(dni, newEmployee);
+            repairedCount++;
+            console.log(`🔧 Empleado reparado: ${newEmployee.name} (${dni})`);
+        }
+    }
+    
+    return repairedCount;
+}
 }
 
 module.exports = DataManager;

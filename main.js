@@ -73,7 +73,6 @@ class EmployeeBonusBot {
         // Iniciar el bot
         await this.client.login(this.token);
     }
-
     // Método para actualizar el porcentaje de bonos
     setBonusPercentage(percentage) {
         if (this.bonusCalculator.setBonusPercentage(percentage)) {

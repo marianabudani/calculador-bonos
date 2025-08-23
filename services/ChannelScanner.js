@@ -36,18 +36,19 @@ class ChannelScanner {
                 }
                  // Procesar mensajes
                 const bonusData = this.processMessages(allMessages);
-                
+        
                 // Sincronizar con estructura principal
                 const syncResult = await this.syncScanDataWithMain(bonusData);
                 
                 // Guardar datos
                 await this.bot.dataManager.saveData();
                 
+                console.log(`💾 Datos guardados: ${syncResult.syncedWeeks} semanas, ${syncResult.syncedInvoices} facturas`);
+                
                 lastMessageId = messagesArray[messagesArray.length - 1].id;
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
-            console.log(`💾 Datos guardados: ${syncResult.syncedWeeks} semanas, ${syncResult.syncedInvoices} facturas`);
-        
+            
             return {
                 totalMessages: allMessages.length,
                 bonusData: bonusData,
@@ -55,7 +56,11 @@ class ChannelScanner {
             }
         } catch (error) {
             console.error('❌ Error en scanChannelByDate:', error);
-            throw error;
+            return {
+                totalMessages: 0,
+                bonusData: { /* estructura default */ },
+                syncResult: { syncedWeeks: 0, syncedInvoices: 0 }
+            };
         }
     }
 
@@ -264,6 +269,85 @@ class ChannelScanner {
 
     console.log(`🔄 Sincronizados: ${syncedCount} semanas, ${invoiceCount} facturas`);
     return { syncedWeeks: syncedCount, syncedInvoices: invoiceCount };
+}
+async syncScanDataWithMain(bonusData) {
+    try {
+        let syncedCount = 0;
+        let invoiceCount = 0;
+
+        if (!bonusData || !bonusData.employeeBonuses) {
+            return { syncedWeeks: 0, syncedInvoices: 0 };
+        }
+
+        for (const [dni, employeeData] of bonusData.employeeBonuses) {
+            let employee = this.bot.dataManager.getEmployee(dni);
+            if (!employee) {
+                employee = this.bot.dataManager.registerEmployee(dni, employeeData.name);
+            } else if (employee.name.startsWith('Empleado ') && !employeeData.name.startsWith('Empleado ')) {
+                employee.name = employeeData.name;
+            }
+
+            if (employeeData.weeks) {
+                for (const [weekKey, weekScanData] of employeeData.weeks) {
+                    const weekData = employee.getWeekData(weekKey);
+                    
+                    if (weekScanData.invoices) {
+                        for (const invoice of weekScanData.invoices) {
+                            const exists = weekData.invoices.some(existingInvoice =>
+                                existingInvoice.amount === invoice.amount &&
+                                existingInvoice.status === invoice.status
+                            );
+                            
+                            if (!exists) {
+                                weekData.invoices.push(invoice);
+                                invoiceCount++;
+                                
+                                if (invoice.status === 'paid') {
+                                    weekData.totalPaid += invoice.amount;
+                                }
+                            }
+                        }
+                    }
+                    
+                    syncedCount++;
+                }
+            }
+        }
+
+        console.log(`🔄 Sincronizados: ${syncedCount} semanas, ${invoiceCount} facturas`);
+        return { syncedWeeks: syncedCount, syncedInvoices: invoiceCount };
+    } catch (error) {
+        console.error('❌ Error en syncScanDataWithMain:', error);
+        return { syncedWeeks: 0, syncedInvoices: 0 };
+    }
+}
+
+async repairEmployees() {
+    let repairedCount = 0;
+    
+    for (const [dni, employee] of this.bot.employees) {
+        if (typeof employee.getWeekData !== 'function') {
+            // Convertir objeto plano a instancia de Employee
+            const Employee = require('../models/Employee');
+            const WeeklyData = require('../models/WeeklyData');
+            
+            const newEmployee = new Employee(dni, employee.name || `Empleado ${dni}`);
+            
+            if (employee.weeklyData) {
+                for (const [weekKey, weekData] of Object.entries(employee.weeklyData)) {
+                    const weeklyData = new WeeklyData();
+                    weeklyData.invoices = weekData.invoices || [];
+                    weeklyData.totalPaid = weekData.totalPaid || 0;
+                    newEmployee.weeklyData.set(weekKey, weeklyData);
+                }
+            }
+            
+            this.bot.employees.set(dni, newEmployee);
+            repairedCount++;
+        }
+    }
+    
+    return repairedCount;
 }
 }
 
