@@ -3,27 +3,337 @@
     "FCK11471": {
       "dni": "FCK11471",
       "name": "Bruce Connors",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:05:18.448Z"
+            },
+            {
+              "amount": 950,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:06:44.332Z"
+            },
+            {
+              "amount": 280,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:08:45.700Z"
+            },
+            {
+              "amount": 75,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:11:08.407Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:16:52.268Z"
+            },
+            {
+              "amount": 750,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:19:27.082Z"
+            },
+            {
+              "amount": 255,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:22:12.643Z"
+            },
+            {
+              "amount": 375,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:24:39.961Z"
+            },
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:26:44.319Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:32:37.375Z"
+            },
+            {
+              "amount": 260,
+              "status": "paid",
+              "timestamp": "2025-08-23T19:50:25.325Z"
+            }
+          ],
+          "totalPaid": 3925
+        }
+      }
     },
     "ZIF02683": {
       "dni": "ZIF02683",
       "name": "Andrea D'Castello",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 1200,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:10:21.966Z"
+            },
+            {
+              "amount": 880,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:15:51.824Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:16:33.959Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-08-21T01:16:50.240Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-08-21T17:46:08.166Z"
+            },
+            {
+              "amount": 400,
+              "status": "paid",
+              "timestamp": "2025-08-21T20:55:41.442Z"
+            },
+            {
+              "amount": 375,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:11:42.669Z"
+            },
+            {
+              "amount": 150,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:15:51.309Z"
+            },
+            {
+              "amount": 1000,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:19:50.329Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:27:54.172Z"
+            },
+            {
+              "amount": 420,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:45:12.553Z"
+            },
+            {
+              "amount": 250,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:57:20.724Z"
+            },
+            {
+              "amount": 475,
+              "status": "paid",
+              "timestamp": "2025-08-21T23:01:53.294Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-22T20:35:18.953Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-08-22T22:01:58.396Z"
+            },
+            {
+              "amount": 320,
+              "status": "paid",
+              "timestamp": "2025-08-23T19:03:01.528Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-23T19:39:49.113Z"
+            }
+          ],
+          "totalPaid": 7490
+        }
+      }
     },
     "KCW84800": {
       "dni": "KCW84800",
       "name": "Ray Teller",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-08-21T17:59:09.671Z"
+            },
+            {
+              "amount": 400,
+              "status": "paid",
+              "timestamp": "2025-08-21T21:53:39.550Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-22T21:22:57.105Z"
+            }
+          ],
+          "totalPaid": 1300
+        }
+      }
     },
     "UDT92869": {
       "dni": "UDT92869",
       "name": "Eazy",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 420,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:31:07.363Z"
+            },
+            {
+              "amount": 190,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:54:33.466Z"
+            },
+            {
+              "amount": 400,
+              "status": "paid",
+              "timestamp": "2025-08-22T02:09:36.915Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-22T02:17:32.319Z"
+            },
+            {
+              "amount": 190,
+              "status": "sent",
+              "timestamp": "2025-08-22T02:44:47.896Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-22T17:14:56.464Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-22T18:04:50.076Z"
+            },
+            {
+              "amount": 390,
+              "status": "paid",
+              "timestamp": "2025-08-22T18:08:40.023Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-22T21:15:39.451Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-08-23T00:06:50.734Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-08-23T00:24:16.359Z"
+            },
+            {
+              "amount": 150,
+              "status": "sent",
+              "timestamp": "2025-08-23T07:16:48.355Z"
+            },
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-08-23T08:36:56.161Z"
+            },
+            {
+              "amount": 40,
+              "status": "paid",
+              "timestamp": "2025-08-23T08:40:18.466Z"
+            }
+          ],
+          "totalPaid": 3320
+        }
+      }
     },
     "VPP68128": {
       "dni": "VPP68128",
       "name": "Carmilla Falcone",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-21T02:16:02.582Z"
+            },
+            {
+              "amount": 2700,
+              "status": "paid",
+              "timestamp": "2025-08-21T02:17:45.661Z"
+            },
+            {
+              "amount": 324,
+              "status": "paid",
+              "timestamp": "2025-08-21T03:11:52.681Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:17:47.611Z"
+            },
+            {
+              "amount": 10000,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:19:26.245Z"
+            },
+            {
+              "amount": 1500,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:59:52.382Z"
+            },
+            {
+              "amount": 1000,
+              "status": "paid",
+              "timestamp": "2025-08-21T23:11:24.915Z"
+            },
+            {
+              "amount": 460,
+              "status": "paid",
+              "timestamp": "2025-08-22T17:42:50.612Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-23T00:23:36.830Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-23T16:03:58.253Z"
+            },
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-08-23T16:51:58.842Z"
+            }
+          ],
+          "totalPaid": 18004
+        }
+      }
     },
     "IKZ82657": {
       "dni": "IKZ82657",
@@ -33,22 +343,181 @@
     "HZU96749": {
       "dni": "HZU96749",
       "name": "Trent Watson",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 190,
+              "status": "paid",
+              "timestamp": "2025-08-21T02:17:49.150Z"
+            },
+            {
+              "amount": 90,
+              "status": "paid",
+              "timestamp": "2025-08-21T02:20:44.691Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-21T03:26:09.540Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-08-21T03:43:20.955Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-21T04:01:47.150Z"
+            },
+            {
+              "amount": 700,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:26:05.943Z"
+            },
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-08-21T22:39:51.094Z"
+            },
+            {
+              "amount": 420,
+              "status": "paid",
+              "timestamp": "2025-08-21T23:31:30.229Z"
+            },
+            {
+              "amount": 840,
+              "status": "paid",
+              "timestamp": "2025-08-21T23:54:18.254Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-08-23T01:36:15.538Z"
+            },
+            {
+              "amount": 135,
+              "status": "paid",
+              "timestamp": "2025-08-23T02:04:07.418Z"
+            },
+            {
+              "amount": 600,
+              "status": "paid",
+              "timestamp": "2025-08-23T02:33:14.849Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-23T02:58:13.782Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-08-23T03:00:17.374Z"
+            },
+            {
+              "amount": 640,
+              "status": "paid",
+              "timestamp": "2025-08-23T04:39:19.338Z"
+            },
+            {
+              "amount": 1,
+              "status": "sent",
+              "timestamp": "2025-08-23T19:01:26.074Z"
+            }
+          ],
+          "totalPaid": 5745
+        }
+      }
     },
     "VXC05431": {
       "dni": "VXC05431",
       "name": "Renata Ruiz",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-08-22T21:27:02.434Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-23T10:16:53.320Z"
+            }
+          ],
+          "totalPaid": 541
+        }
+      }
     },
     "RMI71318": {
       "dni": "RMI71318",
       "name": "Marcos Rodriguez",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-08-21T00:17:43.293Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-08-21T17:38:07.690Z"
+            },
+            {
+              "amount": 150,
+              "status": "paid",
+              "timestamp": "2025-08-21T17:49:17.283Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-21T20:13:20.256Z"
+            },
+            {
+              "amount": 280,
+              "status": "paid",
+              "timestamp": "2025-08-21T21:58:03.462Z"
+            },
+            {
+              "amount": 265,
+              "status": "paid",
+              "timestamp": "2025-08-22T20:48:32.185Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-22T20:49:50.499Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-23T05:01:42.142Z"
+            }
+          ],
+          "totalPaid": 1875
+        }
+      }
     },
     "ZYN98781": {
       "dni": "ZYN98781",
       "name": "Sophie  legaspie",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-08-22T20:57:34.512Z"
+            }
+          ],
+          "totalPaid": 1
+        }
+      }
     },
     "HQJ49839": {
       "dni": "HQJ49839",
@@ -58,10 +527,21 @@
     "QEG73999": {
       "dni": "QEG73999",
       "name": "Xavi Cley",
-      "weeklyData": {}
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-08-22T20:59:14.970Z"
+            }
+          ],
+          "totalPaid": 1
+        }
+      }
     }
   },
   "bonusPercentage": 10,
   "currentWeek": "2025-34",
-  "savedAt": "2025-08-23T20:11:19.972Z"
+  "savedAt": "2025-08-23T21:30:07.696Z"
 }

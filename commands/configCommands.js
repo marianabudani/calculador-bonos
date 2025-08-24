@@ -102,6 +102,24 @@ class ConfigCommands {
             await syncMsg.edit('❌ Error al sincronizar datos: ' + error.message);
         }
     }
+    async handleRepararNombres(message) {
+        try {
+            const repairingMsg = await message.reply('🔧 Escaneando mensajes para reparar nombres de empleados...');
+            
+            // Esta función debería existir en DataManager.js
+            const repairedCount = await this.bot.dataManager.repairEmployeeNames();
+            
+            if (repairedCount > 0) {
+                await repairingMsg.edit(`✅ Reparados ${repairedCount} nombres de empleados. Usa \`!empleados\` para verificar.`);
+            } else {
+                await repairingMsg.edit('✅ No se encontraron nombres que reparar. Todos los nombres están correctos.');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error en comando repararnombres:', error);
+            await message.reply(`❌ Error al reparar nombres: ${error.message}`);
+        }
+    }
 }
 
 module.exports = ConfigCommands;

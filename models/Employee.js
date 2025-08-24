@@ -1,3 +1,5 @@
+const WeeklyData = require('./WeeklyData');
+
 class Employee {
     constructor(dni, name) {
         this.dni = dni;
@@ -7,8 +9,7 @@ class Employee {
 
     getWeekData(weekKey) {
         if (!this.weeklyData.has(weekKey)) {
-            const newWeeklyData = new WeeklyData();
-            this.weeklyData.set(weekKey, newWeeklyData);
+            this.weeklyData.set(weekKey, new WeeklyData());
         }
         return this.weeklyData.get(weekKey);
     }
@@ -19,6 +20,22 @@ class Employee {
             total += weekData.totalPaid;
         }
         return total;
+    }
+
+    getPaidInvoices() {
+        let paid = [];
+        for (const weekData of this.weeklyData.values()) {
+            paid = paid.concat(weekData.invoices.filter(inv => inv.status === 'paid'));
+        }
+        return paid;
+    }
+
+    getPendingInvoices() {
+        let pending = [];
+        for (const weekData of this.weeklyData.values()) {
+            pending = pending.concat(weekData.invoices.filter(inv => inv.status === 'sent'));
+        }
+        return pending;
     }
 
     toJSON() {

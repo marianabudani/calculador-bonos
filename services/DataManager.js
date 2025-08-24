@@ -79,109 +79,90 @@ class DataManager {
         return Array.from(this.bot.employees.values());
     }
 
-    // Método para reparar empleados que no son instancias de Employee
     repairEmployees() {
         let repairedCount = 0;
         
         for (const [dni, employee] of this.bot.employees) {
-            if (!(employee instanceof Employee)) {
-                // Convertir objeto plano a instancia de Employee
+            if (typeof employee.getWeekData !== 'function') {
+                console.log(`🔧 Reparando empleado: ${dni}`);
+                
                 const newEmployee = new Employee(dni, employee.name || `Empleado ${dni}`);
                 
-                // Convertir weeklyData si existe
                 if (employee.weeklyData) {
                     for (const [weekKey, weekData] of Object.entries(employee.weeklyData)) {
-                        const weeklyData = new WeeklyData();
-                        weeklyData.invoices = weekData.invoices || [];
-                        weeklyData.totalPaid = weekData.totalPaid || 0;
-                        newEmployee.weeklyData.set(weekKey, weeklyData);
+                        const weeklyDataInstance = new WeeklyData();
+                        weeklyDataInstance.invoices = weekData.invoices || [];
+                        weeklyDataInstance.totalPaid = weekData.totalPaid || 0;
+                        newEmployee.weeklyData.set(weekKey, weeklyDataInstance);
                     }
                 }
                 
                 this.bot.employees.set(dni, newEmployee);
                 repairedCount++;
-                console.log(`🔧 Empleado reparado: ${newEmployee.name} (${dni})`);
             }
         }
         
         return repairedCount;
     }
-    async forceSyncFromScan() {
-    let syncedCount = 0;
-    let invoiceCount = 0;
-    
-    // Esta función asume que los datos del escaneo están en this.bot.channelScanner.lastScanData
-    if (!this.bot.channelScanner.lastScanData) {
-        return { syncedCount: 0, invoiceCount: 0 };
-    }
-    
-    const bonusData = this.bot.channelScanner.lastScanData;
-    
-    for (const [dni, employeeData] of bonusData.employeeBonuses) {
-        let employee = this.getEmployee(dni);
-        if (!employee) {
-            employee = this.registerEmployee(dni, employeeData.name);
-            syncedCount++;
-        } else if (employee.name.startsWith('Empleado ') && !employeeData.name.startsWith('Empleado ')) {
-            employee.name = employeeData.name;
-            syncedCount++;
+    async repairEmployeeNames() {
+        let repairedCount = 0;
+        const webhookChannelId = process.env.CANAL_WEBHOOK;
+        
+        if (!webhookChannelId) {
+            console.log('❌ No se configuró CANAL_WEBHOOK para reparar nombres');
+            return 0;
         }
         
-        for (const [weekKey, weekScanData] of employeeData.weeks) {
-            const weekData = employee.getWeekData(weekKey);
+        try {
+            console.log('🔧 Buscando nombres reales de empleados...');
             
-            for (const invoice of weekScanData.invoices) {
-                const exists = weekData.invoices.some(existingInvoice =>
-                    existingInvoice.amount === invoice.amount &&
-                    existingInvoice.status === invoice.status
-                );
-                
-                if (!exists) {
-                    weekData.invoices.push(invoice);
-                    invoiceCount++;
+            const channel = await this.bot.client.channels.fetch(webhookChannelId);
+            const messages = await channel.messages.fetch({ limit: 200 });
+            
+            for (const message of messages.values()) {
+                if (message.webhookId && this.bot.messageParser.isWebhookLog(message.content)) {
+                    const lines = message.content.split('\n');
                     
-                    if (invoice.status === 'paid') {
-                        weekData.totalPaid += invoice.amount;
+                    for (const line of lines) {
+                        try {
+                            const parsed = this.bot.messageParser.parseLine(line.trim());
+                            if (parsed && parsed.type === 'service_entry') {
+                                const employee = this.getEmployee(parsed.dni);
+                                
+                                if (employee && employee.name.startsWith('Empleado ') && !parsed.name.startsWith('Empleado')) {
+                                    const oldName = employee.name;
+                                    employee.name = parsed.name;
+                                    repairedCount++;
+                                    console.log(`🔧 Nombre reparado: ${oldName} → ${parsed.name} (${parsed.dni})`);
+                                }
+                                
+                                if (!employee && !parsed.name.startsWith('Empleado')) {
+                                    this.registerEmployee(parsed.dni, parsed.name);
+                                    repairedCount++;
+                                    console.log(`🔧 Empleado registrado: ${parsed.name} (${parsed.dni})`);
+                                }
+                            }
+                        } catch (error) {
+                            console.error('❌ Error procesando línea:', error);
+                        }
                     }
                 }
             }
-        }
-    }
-    
-    if (syncedCount > 0 || invoiceCount > 0) {
-        await this.saveData();
-        console.log(`🔄 Sincronización forzada: ${syncedCount} empleados, ${invoiceCount} facturas`);
-    }
-    
-    return { syncedCount, invoiceCount };
-}
-repairEmployees() {
-    let repairedCount = 0;
-    const Employee = require('../models/Employee');
-    const WeeklyData = require('../models/WeeklyData');
-    
-    for (const [dni, employee] of this.bot.employees) {
-        if (typeof employee.getWeekData !== 'function') {
-            const newEmployee = new Employee(dni, employee.name || `Empleado ${dni}`);
             
-            if (employee.weeklyData) {
-                for (const [weekKey, weekData] of Object.entries(employee.weeklyData)) {
-                    const weeklyData = new WeeklyData();
-                    weeklyData.invoices = weekData.invoices || [];
-                    weeklyData.totalPaid = weekData.totalPaid || 0;
-                    newEmployee.weeklyData.set(weekKey, weeklyData);
-                }
+            if (repairedCount > 0) {
+                await this.saveData();
+                console.log(`✅ Reparados ${repairedCount} nombres de empleados`);
+            } else {
+                console.log('✅ No se encontraron nombres que reparar');
             }
             
-            this.bot.employees.set(dni, newEmployee);
-            repairedCount++;
-            console.log(`🔧 Empleado reparado: ${newEmployee.name} (${dni})`);
+            return repairedCount;
+            
+        } catch (error) {
+            console.error('❌ Error en repairEmployeeNames:', error);
+            return 0;
         }
     }
-    
-    return repairedCount;
-}
-
 }
 
 module.exports = DataManager;
