@@ -182,9 +182,14 @@
               "amount": 540,
               "status": "paid",
               "timestamp": "2025-08-22T21:22:57.105Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-08-23T22:28:11.248Z"
             }
           ],
-          "totalPaid": 1300
+          "totalPaid": 1600
         }
       }
     },
@@ -263,9 +268,39 @@
               "amount": 40,
               "status": "paid",
               "timestamp": "2025-08-23T08:40:18.466Z"
+            },
+            {
+              "amount": 150,
+              "status": "paid",
+              "timestamp": "2025-08-23T07:16:48.355Z"
+            },
+            {
+              "amount": 520,
+              "status": "paid",
+              "timestamp": "2025-08-24T01:38:30.204Z"
+            },
+            {
+              "amount": 1080,
+              "status": "paid",
+              "timestamp": "2025-08-24T02:16:20.790Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-08-24T16:16:21.768Z"
+            },
+            {
+              "amount": 560,
+              "status": "paid",
+              "timestamp": "2025-08-24T16:42:33.820Z"
+            },
+            {
+              "amount": 3000,
+              "status": "paid",
+              "timestamp": "2025-08-24T16:47:41.915Z"
             }
           ],
-          "totalPaid": 3320
+          "totalPaid": 8990
         }
       }
     },
@@ -503,9 +538,14 @@
         }
       }
     },
+    "HQJ49839": {
+      "dni": "HQJ49839",
+      "name": "Alex Heredia",
+      "weeklyData": {}
+    },
     "ZYN98781": {
       "dni": "ZYN98781",
-      "name": "Sophie  legaspie",
+      "name": "Empleado ZYN98781",
       "weeklyData": {
         "2025-34": {
           "invoices": [
@@ -519,14 +559,9 @@
         }
       }
     },
-    "HQJ49839": {
-      "dni": "HQJ49839",
-      "name": "Alex Heredia",
-      "weeklyData": {}
-    },
     "QEG73999": {
       "dni": "QEG73999",
-      "name": "Xavi Cley",
+      "name": "Empleado QEG73999",
       "weeklyData": {
         "2025-34": {
           "invoices": [
@@ -539,9 +574,25 @@
           "totalPaid": 1
         }
       }
+    },
+    "VCB17787": {
+      "dni": "VCB17787",
+      "name": "Empleado VCB17787",
+      "weeklyData": {
+        "2025-34": {
+          "invoices": [
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-08-24T18:03:12.840Z"
+            }
+          ],
+          "totalPaid": 540
+        }
+      }
     }
   },
   "bonusPercentage": 10,
   "currentWeek": "2025-34",
-  "savedAt": "2025-08-23T21:30:07.696Z"
+  "savedAt": "2025-08-24T18:09:36.448Z"
 }

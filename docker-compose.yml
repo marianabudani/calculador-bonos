@@ -1,0 +1,9 @@
+services:
+
+  calcular-bonos-app:
+    build: .
+    image: mbudani/calcular-bonos:v1
+    container_name: calcular-bonos-app
+    ports:
+      - "${APP_PORT}:3000"
+    restart: unless-stopped
