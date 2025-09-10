@@ -125,6 +125,23 @@ class MessageHandler {
                 case 'reparar':
                     await this.configCommands.handleRepararNombres(message);
                 break;
+                case 'inventario':
+                case 'inv':
+                    await this.bot.inventoryService.showInventory(message);
+                    break;
+
+                case 'valorretiros':
+                    await this.bot.inventoryService.calculateWithdrawValue(message);
+                    break;
+
+                case 'procesarlog':
+                    await this.bot.inventoryService.processLogCommand(message);
+                    break;
+
+                case 'retirosdni':
+                    if (!args[1]) return message.reply("❌ Uso: `!retirosdni <DNI>`");
+                    await this.bot.inventoryService.showEmployeeLogs(message, args[1]);
+                    break;
                 default:
                     await message.reply('❓ Comando no reconocido. Usa `!ayuda` para ver comandos disponibles.');
             }

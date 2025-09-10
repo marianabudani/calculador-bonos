@@ -52,6 +52,7 @@ class HelperCommands {
                 { name: '!semana', value: 'Información de la semana actual', inline: true },
                 { name: '!ayuda', value: 'Muestra esta ayuda', inline: true },
                 { name: '!repararnombres', value: 'Repara nombres genéricos de empleados', inline: true },
+                { name: "📦 Inventario", value: "`!inventario` → stock actual\n`!valorretiros` → valor total retirado en $\n`!procesarlog` → procesa un bloque de log pegado\n`!retirosdni <DNI>` → movimientos de un empleado", inline: false },
                 { name: '!syncdata', value: 'Sincroniza datos del último escaneo', inline: true },
             )
             .setFooter({ text: 'Sistema de bonos semanales (Lunes a Domingo)' });

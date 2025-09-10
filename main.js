@@ -3,6 +3,7 @@ const MessageHandler = require('./events/messageHandler');
 const DataManager = require('./services/DataManager');
 const BonusCalculator = require('./services/BonusCalculator');
 const ChannelScanner = require('./services/ChannelScanner');
+const InventoryService = require('./services/InventoryControl');
 const { loadConfig } = require('./config/default');
 require('dotenv').config();
 
@@ -28,7 +29,7 @@ class EmployeeBonusBot {
         this.bonusCalculator = new BonusCalculator(this.bonusPercentage);
         this.channelScanner = new ChannelScanner(this);
         this.messageHandler = new MessageHandler(this);
-        
+        this.inventoryService = new InventoryService();
         this.setupEventHandlers();
     }
 

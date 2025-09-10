@@ -180,6 +180,7 @@ class EmbedUtils {
             { name: '!scanfecha [inicio] [fin]', value: 'Escanea por rango de fechas', inline: true },
             { name: '!scan [número]', value: 'Escanea mensajes anteriores', inline: true },
             { name: '!semana', value: 'Información de la semana actual', inline: true },
+            { name: "📦 Inventario", value: "`!inventario` → stock actual\n`!valorretiros` → valor total retirado en $\n`!procesarlog` → procesa un bloque de log pegado\n`!retirosdni <DNI>` → movimientos de un empleado", inline: false },
             { name: '!ayuda', value: 'Muestra esta ayuda', inline: true }
         ];
 
