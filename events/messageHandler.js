@@ -122,6 +122,9 @@ class MessageHandler {
                 case 'repararnombres':
                     await this.configCommands.handleRepararNombres(message);
                 break;
+                case 'reparar':
+                    await this.configCommands.handleRepararNombres(message);
+                break;
                 default:
                     await message.reply('❓ Comando no reconocido. Usa `!ayuda` para ver comandos disponibles.');
             }

@@ -23,8 +23,94 @@ class EmployeeBonusBot {
             commandChannelIds: config.commandChannelIds || [], // IDs de canales para comandos
             allowAllChannels: config.allowAllChannels || true // Si permite todos los canales
         };
+         this.inventory = {
+            'Bolsa de Comida': 0,
+            'Bolsa de Liquidos': 0,
+            'Bandage': 0,
+            'Bolso de Almacenamiento': 0,
+            'Hamburguesa': 0,
+            'Whiscola': 0,
+            'Hidromiel': 0,
+            'Aros de Cebolla': 0,
+            'Papas Fritas': 0,
+            'Toros del Paso': 0,
+            'Ticket Rasca y Gana': 0,
+            'Super Vodka': 0,
+            'Kit de reparación': 0
+        };
         
+        this.prices = {
+            'Hamburguesa': 40,
+            'Whiscola': 40,
+            'Hidromiel': 40,
+            'Aros de Cebolla': 20,
+            'Papas Fritas': 20,
+            'Toros del Paso': 20,
+            'Ticket Rasca y Gana': 250,
+            'Super Vodka': 100,
+            'Kit de reparación': 290
+        };
+        
+        this.inventoryLogs = [];
         this.setupEventHandlers();
+    }
+ processInventoryLog(logContent) {
+        const lines = logContent.split('\n');
+        const inventoryResults = [];
+        
+        for (const line of lines) {
+            const result = this.parseInventoryLine(line.trim());
+            if (result) {
+                inventoryResults.push(result);
+                this.inventoryLogs.push({
+                    ...result,
+                    timestamp: new Date(),
+                    processed: true
+                });
+            }
+        }
+        
+        return inventoryResults;
+    }
+    parseInventoryLine(line) {
+        // Patrón para capturar logs de inventario
+        const inventoryPattern = /^\[([A-Z]{3}\d+)\]\s+([^]+?)\s+(ha guardado|ha retirado)\s+x(\d+)\s+(.+)\.$/;
+        const match = line.match(inventoryPattern);
+        
+        if (!match) return null;
+        
+        const [, dni, name, action, quantityStr, item] = match;
+        const quantity = parseInt(quantityStr);
+        const isDeposit = action === 'ha guardado';
+        
+        // Actualizar inventario
+        if (this.inventory[item] === undefined) {
+            this.inventory[item] = 0;
+        }
+        
+        if (isDeposit) {
+            this.inventory[item] += quantity;
+        } else {
+            this.inventory[item] = Math.max(0, this.inventory[item] - quantity);
+        }
+        
+        return {
+            dni,
+            name: name.trim(),
+            action: isDeposit ? 'deposit' : 'withdraw',
+            quantity,
+            item,
+            currentStock: this.inventory[item],
+            value: this.calculateItemValue(item, quantity, isDeposit)
+        };
+    }
+
+    calculateItemValue(item, quantity, isDeposit) {
+        const price = this.prices[item.toLowerCase()];
+        if (!price) return 0;
+        
+        // Solo calcular valor para retiros (ventas)
+        return isDeposit ? 0 : quantity * price;
     }
 
     // Obtiene la clave de la semana actual (Año-Semana, ej: "2025-34")
@@ -107,7 +193,9 @@ class EmployeeBonusBot {
     }
 
     isWebhookLog(content) {
-        return content.includes('[UDT') || content.includes('ha enviado una factura') || content.includes('ha pagado una factura');
+        return content.includes('[') || content.includes('ha enviado una factura') || content.includes('ha pagado una factura')||
+               content.includes('ha guardado') || 
+               content.includes('ha retirado');
     }
 
     async processWebhookLog(logContent) {
@@ -119,6 +207,11 @@ class EmployeeBonusBot {
     }
 
     async parseLine(line) {
+        const inventoryResult = this.parseInventoryLine(line);
+        if (inventoryResult) {
+            console.log(`📦 Log de inventario procesado: ${inventoryResult.action} ${inventoryResult.quantity} ${inventoryResult.item}`);
+            return;
+        }
         const patterns = {
             // Mejorado para capturar mejor los nombres
             serviceEntry: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha entrado en servicio/,
@@ -179,10 +272,10 @@ class EmployeeBonusBot {
         return employee.weeklyData.get(weekKey);
     }
 
-    addInvoice(dni, amount, status = 'sent') {
+    addInvoice(dni, name, amount, status = 'sent') {
         // Si el empleado no existe, crearlo con nombre temporal
         if (!this.employees.has(dni)) {
-            this.registerEmployee(dni, `Empleado ${dni}`);
+            this.registerEmployee(dni, name);
         }
         
         const weekData = this.getEmployeeWeekData(dni, this.currentWeek);
@@ -193,10 +286,10 @@ class EmployeeBonusBot {
         });
     }
 
-    markInvoiceAsPaid(dni, amount) {
+    markInvoiceAsPaid(dni, name, amount) {
         if (!this.employees.has(dni)) {
             // Crear empleado si no existe
-            this.registerEmployee(dni, `Empleado ${dni}`);
+            this.registerEmployee(dni, name);
         }
         
         const weekData = this.getEmployeeWeekData(dni, this.currentWeek);
@@ -680,7 +773,20 @@ async handleCommand(message) {
             case 'ayuda':
                 await this.showHelp(message);
                 break;
+
+            case 'inventario':
+            case 'inv':
+                await this.showInventory(message);
+                break;
                 
+            case 'valorretiros':
+                await this.calculateWithdrawValue(message, args.slice(1));
+                break;
+                
+            case 'procesarlog':
+                await this.processLogCommand(message);
+                break; 
+
             case 'scanfecha':
             try {
                 const fechaInicioStr = args[1]; // formato DD/MM/YYYY
@@ -926,12 +1032,175 @@ async handleCommand(message) {
         await message.reply(`❌ Error al procesar el comando: ${error.message}`);
     }
 }
+ async showInventory(message) {
+        const embed = new EmbedBuilder()
+            .setTitle('📦 Inventario Actual')
+            .setColor('#00ff00')
+            .setTimestamp();
+        
+        let inventoryText = '';
+        let totalValue = 0;
+        
+        for (const [item, quantity] of Object.entries(this.inventory)) {
+            if (quantity > 0) {
+                const price = this.prices[item.toLowerCase()] || 0;
+                const value = quantity * price;
+                totalValue += value;
+                
+                inventoryText += `**${item}**: ${quantity} unidades`;
+                if (price > 0) {
+                    inventoryText += ` - Valor: $${value}`;
+                }
+                inventoryText += '\n';
+            }
+        }
+        
+        if (inventoryText) {
+            embed.setDescription(inventoryText);
+            embed.addFields({
+                name: '💰 Valor Total del Inventario',
+                value: `$${totalValue}`,
+                inline: true
+            });
+        } else {
+            embed.setDescription('El inventario está vacío.');
+        }
+        
+        message.reply({ embeds: [embed] });
+    }
+    async calculateWithdrawValue(message, args) {
+        let totalValue = 0;
+        const withdrawals = [];
+        
+        // Si se proporciona un rango de fechas
+        let startDate = null;
+        let endDate = null;
+        
+        if (args.length >= 2) {
+            const [startStr, endStr] = args;
+            // Parsear fechas (formato DD/MM/AAAA)
+            const [day, month, year] = startStr.split('/').map(Number);
+            startDate = new Date(year, month - 1, day);
+            
+            const [endDay, endMonth, endYear] = endStr.split('/').map(Number);
+            endDate = new Date(endYear, endMonth - 1, endDay, 23, 59, 59);
+        }
+        
+        for (const log of this.inventoryLogs) {
+            if (log.action === 'withdraw' && log.value > 0) {
+                // Filtrar por fecha si se especificó
+                if (startDate && endDate) {
+                    if (log.timestamp >= startDate && log.timestamp <= endDate) {
+                        totalValue += log.value;
+                        withdrawals.push(log);
+                    }
+                } else {
+                    totalValue += log.value;
+                    withdrawals.push(log);
+                }
+            }
+        }
+        
+        const embed = new EmbedBuilder()
+            .setTitle('💰 Valor de Retiros del Inventario')
+            .setColor('#ff9900');
+        
+        if (startDate && endDate) {
+            embed.setDescription(`Período: ${startDate.toLocaleDateString('es-ES')} - ${endDate.toLocaleDateString('es-ES')}`);
+        }
+        
+        embed.addFields({
+            name: 'Valor Total',
+            value: `$${totalValue}`,
+            inline: false
+        });
+        
+        // Mostrar detalle si hay pocos retiros
+        if (withdrawals.length > 0 && withdrawals.length <= 10) {
+            let detail = '';
+            for (const withdrawal of withdrawals) {
+                detail += `**${withdrawal.item}**: x${withdrawal.quantity} - $${withdrawal.value}\n`;
+            }
+            embed.addFields({
+                name: 'Detalle de Retiros',
+                value: detail,
+                inline: false
+            });
+        }
+        
+        message.reply({ embeds: [embed] });
+    }
+
+    async processLogCommand(message) {
+        // Asumiendo que el mensaje contiene logs de inventario
+        const results = this.processInventoryLog(message.content);
+        
+        if (results.length === 0) {
+            await message.reply('❌ No se encontraron logs de inventario válidos en el mensaje.');
+            return;
+        }
+        
+        const embed = new EmbedBuilder()
+            .setTitle('✅ Logs de Inventario Procesados')
+            .setColor('#00ff00');
+        
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (const result of results) {
+            if (result) {
+                successCount++;
+            } else {
+                errorCount++;
+            }
+        }
+        
+        embed.addFields(
+            {
+                name: 'Procesados',
+                value: `${successCount} logs procesados correctamente`,
+                inline: true
+            },
+            {
+                name: 'Errores',
+                value: `${errorCount} logs con errores`,
+                inline: true
+            }
+        );
+        
+        // Mostrar resumen de cambios
+        let changes = '';
+        const changesMap = new Map();
+        
+        for (const result of results) {
+            if (result) {
+                const key = `${result.action === 'deposit' ? '➕' : '➖'} ${result.item}`;
+                changesMap.set(key, (changesMap.get(key) || 0) + result.quantity);
+            }
+        }
+        
+        for (const [key, quantity] of changesMap) {
+            changes += `${key}: ${quantity}\n`;
+        }
+        
+        if (changes) {
+            embed.addFields({
+                name: 'Cambios en Inventario',
+                value: changes,
+                inline: false
+            });
+        }
+        
+        await message.reply({ embeds: [embed] });
+    }
     async saveDataToFile() {
         try {
             const data = {
                 employees: Object.fromEntries(this.employees),
                 bonusPercentage: this.bonusPercentage,
                 currentWeek: this.currentWeek,
+                inventory: this.inventory,
+                inventoryLogs: this.inventoryLogs,
                 savedAt: new Date().toISOString()
             };
             

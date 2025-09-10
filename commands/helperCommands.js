@@ -50,7 +50,9 @@ class HelperCommands {
                 { name: '!scanfecha [inicio] [fin]', value: 'Escanea por rango de fechas', inline: true },
                 { name: '!scan [número]', value: 'Escanea mensajes anteriores', inline: true },
                 { name: '!semana', value: 'Información de la semana actual', inline: true },
-                { name: '!ayuda', value: 'Muestra esta ayuda', inline: true }
+                { name: '!ayuda', value: 'Muestra esta ayuda', inline: true },
+                { name: '!repararnombres', value: 'Repara nombres genéricos de empleados', inline: true },
+                { name: '!syncdata', value: 'Sincroniza datos del último escaneo', inline: true },
             )
             .setFooter({ text: 'Sistema de bonos semanales (Lunes a Domingo)' });
 
