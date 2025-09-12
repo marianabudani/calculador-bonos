@@ -170,9 +170,19 @@
               "amount": 540,
               "status": "paid",
               "timestamp": "2025-09-09T04:07:35.576Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-10T19:38:03.310Z"
+            },
+            {
+              "amount": 290,
+              "status": "paid",
+              "timestamp": "2025-09-10T20:38:40.321Z"
             }
           ],
-          "totalPaid": 900
+          "totalPaid": 1370
         }
       }
     },
@@ -442,9 +452,19 @@
               "amount": 1540,
               "status": "paid",
               "timestamp": "2025-08-30T18:55:39.653Z"
+            },
+            {
+              "amount": 320,
+              "status": "paid",
+              "timestamp": "2025-08-31T04:38:32.414Z"
+            },
+            {
+              "amount": 8000,
+              "status": "paid",
+              "timestamp": "2025-08-31T05:57:39.452Z"
             }
           ],
-          "totalPaid": 31830
+          "totalPaid": 40150
         },
         "2025-36": {
           "invoices": [
@@ -512,8 +532,14 @@
           "totalPaid": 4820
         },
         "2025-37": {
-          "invoices": [],
-          "totalPaid": 0
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-10T18:26:33.237Z"
+            }
+          ],
+          "totalPaid": 180
         }
       }
     },
@@ -682,9 +708,14 @@
               "amount": 324,
               "status": "sent",
               "timestamp": "2025-08-30T21:45:44.070Z"
+            },
+            {
+              "amount": 640,
+              "status": "paid",
+              "timestamp": "2025-09-01T00:39:32.321Z"
             }
           ],
-          "totalPaid": 21947
+          "totalPaid": 22587
         },
         "2025-36": {
           "invoices": [
@@ -948,9 +979,14 @@
               "amount": 162,
               "status": "paid",
               "timestamp": "2025-08-30T23:20:58.356Z"
+            },
+            {
+              "amount": 625,
+              "status": "paid",
+              "timestamp": "2025-09-01T00:28:03.091Z"
             }
           ],
-          "totalPaid": 10842
+          "totalPaid": 11467
         },
         "2025-36": {
           "invoices": [
@@ -1108,6 +1144,11 @@
               "amount": 450,
               "status": "paid",
               "timestamp": "2025-09-10T15:58:54.134Z"
+            },
+            {
+              "amount": 290,
+              "status": "sent",
+              "timestamp": "2025-09-11T00:18:12.638Z"
             }
           ],
           "totalPaid": 16190
@@ -1342,6 +1383,10 @@
             }
           ],
           "totalPaid": 5584
+        },
+        "2025-37": {
+          "invoices": [],
+          "totalPaid": 0
         }
       }
     },
@@ -1450,9 +1495,14 @@
               "amount": 640,
               "status": "paid",
               "timestamp": "2025-08-30T00:27:10.856Z"
+            },
+            {
+              "amount": 1800,
+              "status": "paid",
+              "timestamp": "2025-08-31T06:32:05.388Z"
             }
           ],
-          "totalPaid": 6030
+          "totalPaid": 7830
         },
         "2025-36": {
           "invoices": [
@@ -1463,6 +1513,10 @@
             }
           ],
           "totalPaid": 180
+        },
+        "2025-37": {
+          "invoices": [],
+          "totalPaid": 0
         }
       }
     },
@@ -1539,6 +1593,16 @@
             }
           ],
           "totalPaid": 945
+        },
+        "2025-37": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-10T19:16:05.779Z"
+            }
+          ],
+          "totalPaid": 180
         }
       }
     },
@@ -1682,9 +1746,24 @@
               "amount": 20,
               "status": "paid",
               "timestamp": "2025-09-10T01:12:47.415Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-10T23:00:06.100Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-09-10T23:12:10.304Z"
+            },
+            {
+              "amount": 440,
+              "status": "paid",
+              "timestamp": "2025-09-10T23:13:00.124Z"
             }
           ],
-          "totalPaid": 520
+          "totalPaid": 1380
         }
       }
     },
@@ -1858,9 +1937,14 @@
               "amount": 1,
               "status": "sent",
               "timestamp": "2025-09-10T00:58:23.316Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-10T18:48:06.167Z"
             }
           ],
-          "totalPaid": 9740
+          "totalPaid": 9860
         }
       }
     },
@@ -1877,6 +1961,16 @@
             }
           ],
           "totalPaid": 180
+        },
+        "2025-37": {
+          "invoices": [
+            {
+              "amount": 440,
+              "status": "paid",
+              "timestamp": "2025-09-10T18:12:46.811Z"
+            }
+          ],
+          "totalPaid": 440
         }
       }
     },
@@ -1953,7 +2047,7 @@
     },
     "FSQ73136": {
       "dni": "FSQ73136",
-      "name": "Empleado FSQ73136",
+      "name": "Emir Celic",
       "weeklyData": {
         "2025-36": {
           "invoices": [
@@ -1991,9 +2085,120 @@
           "totalPaid": 3150
         }
       }
+    },
+    "FCK11471": {
+      "dni": "FCK11471",
+      "name": "Bruce  Connors",
+      "weeklyData": {
+        "2025-36": {
+          "invoices": [],
+          "totalPaid": 0
+        },
+        "2025-35": {
+          "invoices": [
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-09-01T01:00:43.806Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-01T01:02:57.524Z"
+            },
+            {
+              "amount": 162,
+              "status": "paid",
+              "timestamp": "2025-09-01T01:12:33.745Z"
+            },
+            {
+              "amount": 322,
+              "status": "paid",
+              "timestamp": "2025-09-01T01:20:02.183Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-01T01:22:53.565Z"
+            }
+          ],
+          "totalPaid": 1324
+        }
+      }
+    },
+    "ZJE36313": {
+      "dni": "ZJE36313",
+      "name": "Samuel Reyes",
+      "weeklyData": {
+        "2025-36": {
+          "invoices": [],
+          "totalPaid": 0
+        }
+      }
+    },
+    "CTV35212": {
+      "dni": "CTV35212",
+      "name": "pepe carballo",
+      "weeklyData": {
+        "2025-36": {
+          "invoices": [],
+          "totalPaid": 0
+        }
+      }
+    },
+    "HQJ49839": {
+      "dni": "HQJ49839",
+      "name": "Alex Heredia",
+      "weeklyData": {
+        "2025-35": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-08-29T18:59:08.112Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-08-29T19:01:01.878Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-08-29T19:15:11.859Z"
+            },
+            {
+              "amount": 486,
+              "status": "paid",
+              "timestamp": "2025-08-31T18:00:16.857Z"
+            }
+          ],
+          "totalPaid": 1266
+        }
+      }
+    },
+    "WUC93278": {
+      "dni": "WUC93278",
+      "name": "Juan José Díaz",
+      "weeklyData": {
+        "2025-35": {
+          "invoices": [],
+          "totalPaid": 0
+        }
+      }
+    },
+    "NOK51759": {
+      "dni": "NOK51759",
+      "name": "andrew jhonson",
+      "weeklyData": {
+        "2025-35": {
+          "invoices": [],
+          "totalPaid": 0
+        }
+      }
     }
   },
   "bonusPercentage": 15,
   "currentWeek": "2025-37",
-  "savedAt": "2025-09-10T18:12:32.631Z"
+  "savedAt": "2025-09-11T00:59:15.349Z"
 }

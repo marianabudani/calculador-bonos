@@ -54,7 +54,7 @@ class ChannelScanner {
             
             console.log(`📊 Escaneo completado: ${allMessages.length} mensajes obtenidos (${messagesOutsideRange} fuera del rango)`);
             
-            // Procesar mensajes
+            // Procesar mensajes (ahora incluye inventario)
             const bonusData = this.processMessages(allMessages);
             
             // Sincronizar con estructura principal
@@ -63,7 +63,7 @@ class ChannelScanner {
             // Guardar datos
             await this.bot.dataManager.saveData();
             
-            console.log(`💾 Datos guardados: ${syncResult.syncedWeeks} semanas, ${syncResult.syncedInvoices} facturas`);
+            console.log(`💾 Datos guardados: ${syncResult.syncedWeeks} semanas, ${syncResult.syncedInvoices} facturas, ${syncResult.inventoryProcessed} movimientos inventario`);
             
             // Guardar datos del escaneo para posible uso futuro
             this.lastScanData = bonusData;
@@ -84,9 +84,10 @@ class ChannelScanner {
                     processedMessages: 0,
                     employeesFound: 0,
                     invoicesProcessed: 0,
+                    inventoryProcessed: 0, // NUEVO
                     dateRange: { oldest: null, newest: null }
                 },
-                syncResult: { syncedWeeks: 0, syncedInvoices: 0 }
+                syncResult: { syncedWeeks: 0, syncedInvoices: 0, inventoryProcessed: 0 }
             };
         }
     }
@@ -148,6 +149,7 @@ class ChannelScanner {
             processedMessages: 0,
             employeesFound: 0,
             invoicesProcessed: 0,
+            inventoryProcessed: 0, // NUEVO
             dateRange: { oldest: null, newest: null }
         };
         
@@ -162,6 +164,7 @@ class ChannelScanner {
                     bonusData.dateRange.newest = message.createdAt;
                 }
                 
+                // Procesar logs de webhook (facturas e inventario)
                 if (message.webhookId && this.isWebhookLog(message.content)) {
                     bonusData.processedMessages++;
                     const lines = message.content.split('\n');
@@ -172,6 +175,7 @@ class ChannelScanner {
                 }
             });
             
+            // Calcular bonos totales
             for (const [, employeeData] of bonusData.employeeBonuses) {
                 for (const [, weekData] of employeeData.weeks) {
                     const bonus = Math.round((weekData.totalPaid * this.bot.bonusPercentage) / 100);
@@ -194,6 +198,17 @@ class ChannelScanner {
             if (!parsed) return;
             
             const weekKey = this.getWeekKeyFromDate(timestamp);
+            
+            // Procesar acciones de inventario
+            if (parsed.type === 'inventory_action') {
+                if (this.bot.inventoryService) {
+                    const logEntry = this.bot.inventoryService.parseInventoryLine(line);
+                    if (logEntry) {
+                        bonusData.inventoryProcessed++;
+                    }
+                }
+                return; // No procesar más si es acción de inventario
+            }
             
             if (!bonusData.employeeBonuses.has(parsed.dni)) {
                 bonusData.employeeBonuses.set(parsed.dni, {
@@ -243,9 +258,10 @@ class ChannelScanner {
         try {
             let syncedCount = 0;
             let invoiceCount = 0;
+            let inventoryProcessed = bonusData.inventoryProcessed || 0;
 
             if (!bonusData || !bonusData.employeeBonuses) {
-                return { syncedWeeks: 0, syncedInvoices: 0 };
+                return { syncedWeeks: 0, syncedInvoices: 0, inventoryProcessed: inventoryProcessed };
             }
 
             for (const [dni, employeeData] of bonusData.employeeBonuses) {
@@ -283,11 +299,11 @@ class ChannelScanner {
                 }
             }
 
-            console.log(`🔄 Sincronizados: ${syncedCount} semanas, ${invoiceCount} facturas`);
-            return { syncedWeeks: syncedCount, syncedInvoices: invoiceCount };
+            console.log(`🔄 Sincronizados: ${syncedCount} semanas, ${invoiceCount} facturas, ${inventoryProcessed} movimientos inventario`);
+            return { syncedWeeks: syncedCount, syncedInvoices: invoiceCount, inventoryProcessed: inventoryProcessed };
         } catch (error) {
             console.error('❌ Error en syncScanDataWithMain:', error);
-            return { syncedWeeks: 0, syncedInvoices: 0 };
+            return { syncedWeeks: 0, syncedInvoices: 0, inventoryProcessed: 0 };
         }
     }
 
@@ -305,31 +321,41 @@ class ChannelScanner {
     }
 
     isWebhookLog(content) {
-        return content.includes('[UDT') || 
+        return content.includes('[') || 
                content.includes('ha enviado una factura') || 
-               content.includes('ha pagado una factura');
+               content.includes('ha pagado una factura') ||
+               content.includes('ha retirado') ||
+               content.includes('ha guardado') ||
+               this.messageParser.isInventoryLog(content); // NUEVO: Detectar logs de inventario
     }
 
     createScanEmbed(result, title, additionalFields = []) {
+        const bonusData = result.bonusData || result; // Compatibilidad
+        
         const fields = [
             {
                 name: '📊 Mensajes Procesados',
-                value: `${result.totalMessages || 0} mensajes escaneados\n${result.processedMessages || 0} mensajes de webhook procesados`,
+                value: `${result.totalMessages || 0} mensajes escaneados\n${bonusData.processedMessages || 0} mensajes de webhook procesados`,
                 inline: true
             },
             {
                 name: '👥 Empleados Encontrados',
-                value: `${result.employeesFound || 0} empleados`,
+                value: `${bonusData.employeesFound || 0} empleados`,
                 inline: true
             },
             {
                 name: '📄 Facturas Procesadas',
-                value: `${result.invoicesProcessed || 0} facturas`,
+                value: `${bonusData.invoicesProcessed || 0} facturas`,
+                inline: true
+            },
+            {
+                name: '📦 Movimientos Inventario',
+                value: `${bonusData.inventoryProcessed || 0} movimientos`,
                 inline: true
             },
             {
                 name: '🎁 Bonos Calculados',
-                value: `$${result.totalBonuses || 0} (${this.bot.bonusPercentage}%)`,
+                value: `${bonusData.totalBonuses || 0} (${this.bot.bonusPercentage}%)`,
                 inline: true
             },
             ...additionalFields
