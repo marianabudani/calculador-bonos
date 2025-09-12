@@ -196,20 +196,24 @@ class ChannelScanner {
         try {
             const parsed = this.messageParser.parseLine(line);
             if (!parsed) return;
-            
-            const weekKey = this.getWeekKeyFromDate(timestamp);
-            
-            // Procesar acciones de inventario
-            if (parsed.type === 'inventory_action') {
+                       
+             if (parsed.type === 'inventory_action') {
                 if (this.bot.inventoryService) {
-                    const logEntry = this.bot.inventoryService.parseInventoryLine(line);
-                    if (logEntry) {
-                        bonusData.inventoryProcessed++;
-                    }
+                    // REGISTRAR directamente con los datos ya parseados por MessageParser
+                    this.bot.inventoryService.registerInventoryMovement(
+                        parsed.dni,
+                        parsed.name,
+                        parsed.item,
+                        parsed.quantity,
+                        parsed.action, // 'withdraw' o 'deposit'
+                        timestamp
+                    );
+                    bonusData.inventoryProcessed++;
                 }
                 return; // No procesar más si es acción de inventario
             }
             
+            const weekKey = this.getWeekKeyFromDate(timestamp);
             if (!bonusData.employeeBonuses.has(parsed.dni)) {
                 bonusData.employeeBonuses.set(parsed.dni, {
                     name: parsed.type === 'service_entry' ? parsed.name : `Empleado ${parsed.dni}`,
@@ -227,7 +231,6 @@ class ChannelScanner {
             if (!employee.weeks.has(weekKey)) {
                 employee.weeks.set(weekKey, { invoices: [], totalPaid: 0 });
             }
-            
             const weekData = employee.weeks.get(weekKey);
             
             switch (parsed.type) {

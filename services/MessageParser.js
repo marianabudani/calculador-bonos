@@ -47,24 +47,34 @@ class MessageParser {
             return { type: 'invoice_paid', dni, amount: parseInt(amount) };
         }
 
-        // NUEVO: Parsear acción de inventario
-        const inventoryMatch = line.match(this.patterns.inventoryAction);
-        if (inventoryMatch) {
-            const [, dni, name, action, qtyStr, itemName] = inventoryMatch;
-            const quantity = parseInt(qtyStr);
-            const isDeposit = action.includes("guardado") || action.includes("guardó");
-            
-            if (!isNaN(quantity) && quantity > 0) {
+        // Patrones de inventario
+        const inventoryWithdrawPattern = /\[(\w+)\]\s+(.+?)\s+ha retirado\s+(x?\d+)\s+(.+?)\.$/;
+        const inventoryDepositPattern = /\[(\w+)\]\s+(.+?)\s+ha guardado\s+(x?\d+)\s+(.+?)\.$/;
+        const fundsWithdrawPattern = /\[(\w+)\]\s+(.+?)\s+ha retirado\s+\$?(\d+)\s+Dinero\.$/;
+        const fundsDepositPattern = /\[(\w+)\]\s+(.+?)\s+ha depositado\s+\$?(\d+)\s+en los fondos\.$/;
+        const withdrawMatch = line.match(inventoryWithdrawPattern);
+            if (withdrawMatch) {
                 return {
                     type: 'inventory_action',
-                    dni: dni.toUpperCase(),
-                    name: name.trim(),
-                    action: isDeposit ? 'deposit' : 'withdraw',
-                    item: itemName.trim(),
-                    quantity
+                    dni: withdrawMatch[1],
+                    name: withdrawMatch[2],
+                    action: 'withdraw',
+                    quantity: parseInt(withdrawMatch[3].replace('x', '')),
+                    item: withdrawMatch[4]
                 };
             }
-        }
+            
+            const depositMatch = line.match(inventoryDepositPattern);
+            if (depositMatch) {
+                return {
+                    type: 'inventory_action',
+                    dni: depositMatch[1],
+                    name: depositMatch[2],
+                    action: 'deposit',
+                    quantity: parseInt(depositMatch[3].replace('x', '')),
+                    item: depositMatch[4]
+                };
+            }
 
         return null;
     }

@@ -152,6 +152,37 @@ class InventoryControl {
         return itemMappings[normalized.toLowerCase()] || normalized;
     }
 
+    registerInventoryMovement(dni, employeeName, item, quantity, action, timestamp) {
+        try {
+            // Buscar o crear el empleado en el inventario
+            let employeeInventory = this.getEmployeeInventory(dni);
+            if (!employeeInventory) {
+                employeeInventory = this.createEmployeeInventory(dni, employeeName);
+            }
+            
+            // Actualizar el inventario según la acción
+            if (action === 'deposit') {
+                employeeInventory.addItem(item, quantity);
+            } else if (action === 'withdraw') {
+                employeeInventory.removeItem(item, quantity);
+            }
+            
+            // Registrar el movimiento en el historial
+            this.addToHistory({
+                dni,
+                employeeName,
+                item,
+                quantity,
+                action,
+                timestamp
+            });
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error registrando movimiento de inventario:', error);
+            return false;
+        }
+    }
     // Actualizar log de empleado
     updateEmployeeLog(logEntry) {
         const { dni, name } = logEntry;
