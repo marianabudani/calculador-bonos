@@ -23,12 +23,10 @@ class EmployeeBonusBot {
         this.employees = new Map();
         this.bonusPercentage = this.config.bonusPercentage;
         this.currentWeek = this.getCurrentWeekKey();
-        
-        // Inicializar servicios - IMPORTANTE: pasar referencia del bot al inventario
         this.dataManager = new DataManager(this);
         this.bonusCalculator = new BonusCalculator(this.bonusPercentage);
         this.channelScanner = new ChannelScanner(this);
-        this.inventoryService = new InventoryService(this); // <- CAMBIO AQUÍ
+        this.inventoryService = new InventoryService(this);
         this.messageHandler = new MessageHandler(this);
         
         this.setupEventHandlers();
@@ -59,24 +57,15 @@ class EmployeeBonusBot {
     }
 
     async start() {
-        // Cargar datos guardados si existen
         await this.dataManager.loadData();
-        
-        // Reparar empleados que no sean instancias válidas
         const repairedCount = this.dataManager.repairEmployees();
         if (repairedCount > 0) {
             console.log(`🔧 Reparados ${repairedCount} empleados inválidos`);
             await this.dataManager.saveData();
         }
-        
-        // Sincronizar calculadora de bonos con el porcentaje actual
         this.bonusCalculator.setBonusPercentage(this.bonusPercentage);
-        
-        // Iniciar el bot
         await this.client.login(this.token);
     }
-
-    // Método para actualizar el porcentaje de bonos
     setBonusPercentage(percentage) {
         if (this.bonusCalculator.setBonusPercentage(percentage)) {
             this.bonusPercentage = percentage;
@@ -86,7 +75,6 @@ class EmployeeBonusBot {
     }
 }
 
-// Uso del bot
 if (require.main === module) {
     const bot = new EmployeeBonusBot(process.env.DISCORD_TOKEN);
     bot.start().catch(console.error);

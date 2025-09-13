@@ -6,11 +6,21 @@ class MessageParser {
             invoiceSent: /^\*\*\[([A-Z]{3}\d+)\]\*\*\s+ha enviado una factura\s+`\$(\d+)\s+\(([^)]+)\)`/,
             invoicePaid: /^\*\*[^*]+\*\*\s+ha pagado una factura\s+`\$(\d+)\s+\(([^)]+)\)`\s+de\s+\*\*\[([A-Z]{3}\d+)\]\**/,
             
-            // PATRONES CORREGIDOS PARA INVENTARIO CON FORMATO DISCORD
+            // PATRONES MEJORADOS PARA INVENTARIO
             // Formato: **[DNI] Nombre** ha retirado/guardado `x# Item`.
             inventoryWithBold: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha\s+(retirado|guardado)\s+`x(\d+)\s+([^`]+)`\.?$/i,
             
-            // Formato alternativo sin backticks: **[DNI] Nombre** ha retirado x# Item.
+            // PATRONES PARA DINERO
+            // **[DNI] Nombre** ha retirado `$cantidad` de los fondos.
+            moneyWithdrawFromFunds: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha\s+retirado\s+`\$(\d+)`\s+de\s+los\s+fondos\.?$/i,
+            
+            // **[DNI] Nombre** ha guardado/retirado `x cantidad Dinero`.
+            moneyTransaction: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha\s+(guardado|retirado)\s+`x(\d+)\s+Dinero`\.?$/i,
+            
+            // **[DNI] Nombre** ha depositado $cantidad en los fondos.
+            moneyDepositToFunds: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha\s+depositado\s+`?\$(\d+)`?\s+en\s+los\s+fondos\.?$/i,
+            
+            // Patrones alternativos sin backticks
             inventoryWithBoldNoBT: /^\*\*\[([A-Z]{3}\d+)\]\s+([^*]+?)\*\*\s+ha\s+(retirado|guardado)\s+x(\d+)\s+(.+?)\.?$/i,
             
             // Patrones originales (mantener compatibilidad)
@@ -27,11 +37,13 @@ class MessageParser {
                this.isInventoryLog(content);
     }
 
-    // Mejorar detección de logs de inventario
+    // Mejorar detección de logs de inventario Y dinero
     isInventoryLog(content) {
         const inventoryPatterns = [
             // Detectar formato con negritas Discord
             /\*\*\[[A-Z]{3}\d+\].*?\*\*\s+ha\s+(retirado|guardado)\s+`?x?\d+/i,
+            // Detectar transacciones de dinero
+            /\*\*\[[A-Z]{3}\d+\].*?\*\*\s+ha\s+(retirado|depositado).*?\$\d+.*?(fondos|Dinero)/i,
             // Formato original
             /\[[A-Z]{3}\d+\].*?(ha guardado|ha retirado|guardó|retiró)\s+x?\d+/i,
             /\[[A-Z]{3}\d+\].*?(depositado|retirado).*?\$?\d+/i
@@ -58,7 +70,7 @@ class MessageParser {
         const invoiceMatch = line.match(this.patterns.invoiceSent);
         if (invoiceMatch) {
             const [, dni, amount] = invoiceMatch;
-            console.log(`✅ Invoice sent: ${dni} - $${amount}`); // DEBUG
+            console.log(`✅ Invoice sent: ${dni} - ${amount}`); // DEBUG
             return { type: 'invoice_sent', dni, amount: parseInt(amount) };
         }
 
@@ -66,13 +78,61 @@ class MessageParser {
         const paidMatch = line.match(this.patterns.invoicePaid);
         if (paidMatch) {
             const [, amount, , dni] = paidMatch;
-            console.log(`✅ Invoice paid: ${dni} - $${amount}`); // DEBUG
+            console.log(`✅ Invoice paid: ${dni} - ${amount}`); // DEBUG
             return { type: 'invoice_paid', dni, amount: parseInt(amount) };
         }
 
-        // PARSING DE INVENTARIO MEJORADO - ORDEN IMPORTANTE
+        // PARSING DE DINERO - PRIORIDAD ALTA
         
-        // 1. Intentar formato con negritas Discord y backticks
+        // 1. Retiro de dinero de fondos: **[DNI] Nombre** ha retirado `$cantidad` de los fondos.
+        let moneyMatch = line.match(this.patterns.moneyWithdrawFromFunds);
+        if (moneyMatch) {
+            const [, dni, name, amount] = moneyMatch;
+            console.log(`✅ Money withdraw from funds: ${dni} - ${name} - ${amount}`); // DEBUG
+            return {
+                type: 'inventory_action',
+                dni: dni.toUpperCase(),
+                name: name.trim(),
+                action: 'withdraw',
+                quantity: parseInt(amount),
+                item: 'Dinero'
+            };
+        }
+
+        // 2. Depósito de dinero en fondos: **[DNI] Nombre** ha depositado $cantidad en los fondos.
+        moneyMatch = line.match(this.patterns.moneyDepositToFunds);
+        if (moneyMatch) {
+            const [, dni, name, amount] = moneyMatch;
+            console.log(`✅ Money deposit to funds: ${dni} - ${name} - ${amount}`); // DEBUG
+            return {
+                type: 'inventory_action',
+                dni: dni.toUpperCase(),
+                name: name.trim(),
+                action: 'deposit',
+                quantity: parseInt(amount),
+                item: 'Dinero'
+            };
+        }
+
+        // 3. Transacción de dinero como item: **[DNI] Nombre** ha guardado/retirado `x cantidad Dinero`.
+        moneyMatch = line.match(this.patterns.moneyTransaction);
+        if (moneyMatch) {
+            const [, dni, name, actionText, amount] = moneyMatch;
+            const action = actionText.toLowerCase() === 'guardado' ? 'deposit' : 'withdraw';
+            console.log(`✅ Money transaction: ${dni} - ${name} - ${action} - ${amount} Dinero`); // DEBUG
+            return {
+                type: 'inventory_action',
+                dni: dni.toUpperCase(),
+                name: name.trim(),
+                action: action,
+                quantity: parseInt(amount),
+                item: 'Dinero'
+            };
+        }
+
+        // PARSING DE INVENTARIO REGULAR
+        
+        // 4. Formato con negritas Discord y backticks
         let inventoryMatch = line.match(this.patterns.inventoryWithBold);
         if (inventoryMatch) {
             const [, dni, name, actionText, quantity, item] = inventoryMatch;
@@ -88,7 +148,7 @@ class MessageParser {
             };
         }
 
-        // 2. Intentar formato con negritas Discord sin backticks
+        // 5. Formato con negritas Discord sin backticks
         inventoryMatch = line.match(this.patterns.inventoryWithBoldNoBT);
         if (inventoryMatch) {
             const [, dni, name, actionText, quantity, item] = inventoryMatch;
@@ -104,7 +164,7 @@ class MessageParser {
             };
         }
 
-        // 3. Intentar patrones originales (sin negritas)
+        // 6. Patrones originales (sin negritas)
         inventoryMatch = line.match(this.patterns.inventoryWithdraw);
         if (inventoryMatch) {
             const [, dni, name, action, quantity, item] = inventoryMatch;
@@ -133,7 +193,7 @@ class MessageParser {
             };
         }
 
-        // 4. Patrón general como último recurso
+        // 7. Patrón general como último recurso
         inventoryMatch = line.match(this.patterns.inventoryGeneral);
         if (inventoryMatch) {
             const [, dni, name, actionText, quantity, item] = inventoryMatch;
@@ -149,7 +209,7 @@ class MessageParser {
             };
         }
 
-        // 5. Patrones adicionales para casos especiales
+        // 8. Patrones adicionales para casos especiales
         const specialPatterns = [
             // Patrón más flexible para casos edge
             /^\*\*\[([A-Z]{3}\d+)\]([^*]+?)\*\*.*?(retirado|guardado).*?x?(\d+).*?([A-Za-z\s]+)\.?$/i,
