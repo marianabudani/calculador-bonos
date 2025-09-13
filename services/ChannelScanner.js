@@ -84,7 +84,7 @@ class ChannelScanner {
                     processedMessages: 0,
                     employeesFound: 0,
                     invoicesProcessed: 0,
-                    inventoryProcessed: 0, // NUEVO
+                    inventoryProcessed: 0,
                     dateRange: { oldest: null, newest: null }
                 },
                 syncResult: { syncedWeeks: 0, syncedInvoices: 0, inventoryProcessed: 0 }
@@ -149,7 +149,7 @@ class ChannelScanner {
             processedMessages: 0,
             employeesFound: 0,
             invoicesProcessed: 0,
-            inventoryProcessed: 0, // NUEVO
+            inventoryProcessed: 0,
             dateRange: { oldest: null, newest: null }
         };
         
@@ -197,10 +197,11 @@ class ChannelScanner {
             const parsed = this.messageParser.parseLine(line);
             if (!parsed) return;
                        
-             if (parsed.type === 'inventory_action') {
+            if (parsed.type === 'inventory_action') {
+                console.log(`🔍 Detectado movimiento de inventario: ${line}`);
                 if (this.bot.inventoryService) {
                     // REGISTRAR directamente con los datos ya parseados por MessageParser
-                    this.bot.inventoryService.registerInventoryMovement(
+                    const success = this.bot.inventoryService.registerInventoryMovement(
                         parsed.dni,
                         parsed.name,
                         parsed.item,
@@ -208,7 +209,14 @@ class ChannelScanner {
                         parsed.action, // 'withdraw' o 'deposit'
                         timestamp
                     );
-                    bonusData.inventoryProcessed++;
+                    if (success) {
+                        bonusData.inventoryProcessed++;
+                        console.log(`✅ Movimiento de inventario registrado en ChannelScanner`);
+                    } else {
+                        console.log(`❌ Error registrando movimiento de inventario en ChannelScanner`);
+                    }
+                } else {
+                    console.log(`❌ InventoryService no disponible en ChannelScanner`);
                 }
                 return; // No procesar más si es acción de inventario
             }
@@ -329,7 +337,7 @@ class ChannelScanner {
                content.includes('ha pagado una factura') ||
                content.includes('ha retirado') ||
                content.includes('ha guardado') ||
-               this.messageParser.isInventoryLog(content); // NUEVO: Detectar logs de inventario
+               this.messageParser.isInventoryLog(content);
     }
 
     createScanEmbed(result, title, additionalFields = []) {

@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 class InventoryControl {
     constructor(botInstance = null) {
-        this.bot = botInstance; // Referencia al bot principal para acceder a empleados
+        this.bot = botInstance;
         
         // Inventario inicial - solo una inicialización
         this.inventory = {
@@ -18,23 +18,27 @@ class InventoryControl {
             'Toros del Paso': 0,
             'Ticket Rasca y Gana': 0,
             'Super Vodka': 0,
-            'Kit de Reparación': 0
+            'Kit de Reparación': 0,
+            'Monstruo': 0,
+            'Facturadora': 0
         };
 
         // Precios para items auditados
         this.prices = {
             'hamburguesa': 40,
-            'whiscola': 40,
+            'monstruo': 20,
             'hidromiel': 40,
             'aros de cebolla': 20,
             'papas fritas': 20,
             'toros del paso': 20,
             'ticket rasca y gana': 250,
             'super vodka': 100,
-            'kit de reparación': 290,
-            // Agregar más items si es necesario
-            'bolsa de comida': 0, // Items no auditados = $0
-            'bolsa de liquidos': 0,
+            'kit de reparación': 320,
+            'monstruo': 20,
+            'facturadora': 2000,
+            // Items no auditados = $0
+            'bolsa de comida': 10,
+            'bolsa de liquidos': 10,
             'bandage': 0,
             'bolso de almacenamiento': 0
         };
@@ -43,88 +47,81 @@ class InventoryControl {
         this.employeeLogs = new Map();
     }
 
-    // Método mejorado para parsear líneas de inventario
+    // MÉTODO PRINCIPAL - Registrar movimiento usando datos ya parseados
+    registerInventoryMovement(dni, employeeName, item, quantity, action, timestamp) {
+        try {
+            console.log(`🔧 Registrando movimiento: ${dni} - ${employeeName} - ${action} - ${quantity} ${item}`);
+            
+            // Normalizar datos
+            const normalizedDNI = dni.toUpperCase();
+            const normalizedItem = this.normalizeItemName(item);
+            const cleanName = employeeName.trim();
+            
+            // Validar cantidad
+            if (isNaN(quantity) || quantity <= 0) {
+                console.log(`❌ Cantidad inválida: ${quantity}`);
+                return false;
+            }
+
+            // Actualizar inventario global
+            if (!this.inventory.hasOwnProperty(normalizedItem)) {
+                this.inventory[normalizedItem] = 0;
+                console.log(`📦 Nuevo item agregado al inventario: ${normalizedItem}`);
+            }
+
+            const previousStock = this.inventory[normalizedItem];
+            this.inventory[normalizedItem] += action === 'deposit' ? quantity : -quantity;
+            
+            // No permitir stock negativo
+            if (this.inventory[normalizedItem] < 0) {
+                console.log(`⚠️ Stock negativo detectado para ${normalizedItem}. Ajustando a 0.`);
+                this.inventory[normalizedItem] = 0;
+            }
+
+            // Calcular valor (solo para retiros de items auditados)
+            const price = this.prices[normalizedItem.toLowerCase()] || 0;
+            const value = action === 'withdraw' ? quantity * price : 0;
+
+            // Crear entrada de log
+            const logEntry = {
+                dni: normalizedDNI,
+                name: cleanName,
+                action: action,
+                item: normalizedItem,
+                quantity,
+                value,
+                price,
+                previousStock,
+                currentStock: this.inventory[normalizedItem],
+                timestamp: timestamp || new Date(),
+                weekKey: this.bot ? this.bot.currentWeek : this.getCurrentWeekKey()
+            };
+
+            this.inventoryLogs.push(logEntry);
+
+            // Actualizar logs por empleado
+            this.updateEmployeeLog(logEntry);
+
+            // Integrar con sistema de empleados del bot principal
+            if (this.bot && value > 0) {
+                this.updateEmployeeInventoryValue(normalizedDNI, value);
+            }
+
+            console.log(`✅ Movimiento registrado exitosamente: ${normalizedDNI} - ${action} - ${quantity} ${normalizedItem} (Valor: $${value})`);
+            return true;
+
+        } catch (error) {
+            console.error('❌ Error registrando movimiento de inventario:', error);
+            return false;
+        }
+    }
+
+    // MÉTODO LEGACY - Mantener por compatibilidad pero simplificado
     parseInventoryLine(line) {
-        // Limpiar la línea
-        line = line.trim();
-        if (!line) return null;
-
-        // Patrón mejorado que maneja diferentes formatos
-        const patterns = [
-            /^\[([A-Z]{3}\d+)\]\s+(.+?)\s+(ha guardado|ha retirado)\s+x(\d+)\s+(.+)\.$/,
-            /^\[([A-Z]{3}\d+)\]\s*(.+?)\s+(ha guardado|ha retirado)\s+x(\d+)\s+(.+)$/,
-            /^\[([A-Z]{3}\d+)\]\s+(.+?)\s+(guardó|retiró)\s+x(\d+)\s+(.+)\.?$/
-        ];
-
-        let match = null;
-        for (const pattern of patterns) {
-            match = line.match(pattern);
-            if (match) break;
-        }
-
-        if (!match) {
-            console.log(`⚠️ No se pudo parsear la línea: ${line}`);
-            return null;
-        }
-
-        const [, dni, rawName, action, qtyStr, itemName] = match;
-        
-        // Limpiar y normalizar datos
-        const name = rawName.trim().replace(/\s+/g, " ");
-        const quantity = parseInt(qtyStr);
-        const isDeposit = action.includes("guardado") || action.includes("guardó");
-        const item = this.normalizeItemName(itemName.trim());
-        
-        if (isNaN(quantity) || quantity <= 0) {
-            console.log(`⚠️ Cantidad inválida: ${qtyStr}`);
-            return null;
-        }
-
-        // Actualizar inventario global
-        if (!this.inventory.hasOwnProperty(item)) {
-            this.inventory[item] = 0;
-            console.log(`📦 Nuevo item agregado al inventario: ${item}`);
-        }
-
-        const previousStock = this.inventory[item];
-        this.inventory[item] += isDeposit ? quantity : -quantity;
-        
-        // No permitir stock negativo
-        if (this.inventory[item] < 0) {
-            console.log(`⚠️ Stock negativo detectado para ${item}. Ajustando a 0.`);
-            this.inventory[item] = 0;
-        }
-
-        // Calcular valor (solo para retiros de items auditados)
-        const price = this.prices[item.toLowerCase()] || 0;
-        const value = isDeposit ? 0 : quantity * price;
-
-        // Crear entrada de log
-        const logEntry = {
-            dni: dni.toUpperCase(),
-            name,
-            action: isDeposit ? "deposit" : "withdraw",
-            item,
-            quantity,
-            value,
-            price,
-            previousStock,
-            currentStock: this.inventory[item],
-            timestamp: new Date(),
-            weekKey: this.bot ? this.bot.currentWeek : this.getCurrentWeekKey()
-        };
-
-        this.inventoryLogs.push(logEntry);
-
-        // Actualizar logs por empleado
-        this.updateEmployeeLog(logEntry);
-
-        // Integrar con sistema de empleados del bot principal
-        if (this.bot && value > 0) {
-            this.updateEmployeeInventoryValue(dni, value);
-        }
-
-        return logEntry;
+        console.log(`⚠️ Método parseInventoryLine legacy llamado. Línea: ${line}`);
+        // Este método ya no se usa, el parsing se hace en MessageParser
+        // Devolvemos null para que no interfiera
+        return null;
     }
 
     // Normalizar nombres de items para consistencia
@@ -146,43 +143,18 @@ class InventoryControl {
             'ticket rasca gana': 'Ticket Rasca y Gana',
             'ticket rasca y gana': 'Ticket Rasca y Gana',
             'super vodka': 'Super Vodka',
-            'vodka': 'Super Vodka'
+            'vodka': 'Super Vodka',
+            'monstruo': 'Monstruo',
+            'facturadora': 'Facturadora',
+            'bolsa de comida': 'Bolsa de Comida',
+            'bolsa de liquidos': 'Bolsa de Liquidos',
+            'bandage': 'Bandage',
+            'bolso de almacenamiento': 'Bolso de Almacenamiento'
         };
 
         return itemMappings[normalized.toLowerCase()] || normalized;
     }
 
-    registerInventoryMovement(dni, employeeName, item, quantity, action, timestamp) {
-        try {
-            // Buscar o crear el empleado en el inventario
-            let employeeInventory = this.getEmployeeInventory(dni);
-            if (!employeeInventory) {
-                employeeInventory = this.createEmployeeInventory(dni, employeeName);
-            }
-            
-            // Actualizar el inventario según la acción
-            if (action === 'deposit') {
-                employeeInventory.addItem(item, quantity);
-            } else if (action === 'withdraw') {
-                employeeInventory.removeItem(item, quantity);
-            }
-            
-            // Registrar el movimiento en el historial
-            this.addToHistory({
-                dni,
-                employeeName,
-                item,
-                quantity,
-                action,
-                timestamp
-            });
-            
-            return true;
-        } catch (error) {
-            console.error('❌ Error registrando movimiento de inventario:', error);
-            return false;
-        }
-    }
     // Actualizar log de empleado
     updateEmployeeLog(logEntry) {
         const { dni, name } = logEntry;
@@ -242,7 +214,7 @@ class InventoryControl {
     // Mostrar inventario actual
     async showInventory(message) {
         const embed = new EmbedBuilder()
-            .setTitle("📦 Inventario Actual")
+            .setTitle("📦 Inventario Global")
             .setColor("#00ff00")
             .setTimestamp();
 
@@ -267,12 +239,15 @@ class InventoryControl {
 
         if (itemCount === 0) {
             desc = "Inventario vacío.";
+        } else if (desc.length > 4096) {
+            desc = desc.substring(0, 4000) + "...\n*(Lista truncada)*";
         }
 
         embed.setDescription(desc);
         embed.addFields(
             { name: "💰 Valor Total", value: `$${totalValue}`, inline: true },
             { name: "📊 Items únicos", value: `${itemCount}`, inline: true },
+            { name: "👥 Empleados activos", value: `${this.employeeLogs.size}`, inline: true },
             { name: "📈 Total registros", value: `${this.inventoryLogs.length}`, inline: true }
         );
 
@@ -312,12 +287,9 @@ class InventoryControl {
 
         for (const line of lines) {
             if (line.trim()) {
-                const result = this.parseInventoryLine(line.trim());
-                if (result) {
-                    processed++;
-                } else {
-                    errors++;
-                }
+                // Ya no usamos parseInventoryLine, esto debería manejarse por MessageParser
+                console.log(`⚠️ ProcessLogCommand llamado directamente. Línea: ${line.trim()}`);
+                errors++;
             }
         }
 
@@ -329,6 +301,7 @@ class InventoryControl {
                 { name: "Errores", value: `${errors}`, inline: true },
                 { name: "Total", value: `${lines.length}`, inline: true }
             )
+            .setFooter({ text: "Nota: Use !scanfecha para procesar logs automáticamente" })
             .setTimestamp();
 
         await message.reply({ embeds: [embed] });
@@ -372,7 +345,7 @@ class InventoryControl {
             }
         }
 
-        if (details) {
+        if (details && details.length < 1024) {
             embed.addFields({ name: "Actividad reciente", value: details, inline: false });
         }
 
@@ -420,7 +393,9 @@ class InventoryControl {
             'Toros del Paso': 0,
             'Ticket Rasca y Gana': 0,
             'Super Vodka': 0,
-            'Kit de Reparación': 0
+            'Kit de Reparación': 0,
+            'Monstruo': 0,
+            'Facturadora': 0
         };
         this.inventoryLogs = [];
         this.employeeLogs.clear();
