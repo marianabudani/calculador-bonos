@@ -198,6 +198,106 @@
             }
           ],
           "totalPaid": 2643
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-09-19T20:43:19.652Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-20T01:23:59.238Z"
+            },
+            {
+              "amount": 445,
+              "status": "paid",
+              "timestamp": "2025-09-20T01:24:44.650Z"
+            },
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-09-22T01:05:37.762Z"
+            },
+            {
+              "amount": 400,
+              "status": "paid",
+              "timestamp": "2025-09-22T01:06:26.821Z"
+            }
+          ],
+          "totalPaid": 2525
+        },
+        "2025-41": {
+          "invoices": [
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-10T23:56:50.830Z"
+            }
+          ],
+          "totalPaid": 240
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:17:14.195Z"
+            },
+            {
+              "amount": 6000,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:46:05.534Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-24T02:07:45.381Z"
+            },
+            {
+              "amount": 250,
+              "status": "paid",
+              "timestamp": "2025-09-24T02:08:29.474Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-24T02:25:27.675Z"
+            }
+          ],
+          "totalPaid": 7330
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:15:09.609Z"
+            },
+            {
+              "amount": 1060,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:29:13.979Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:30:00.034Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:33:45.763Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:07:03.710Z"
+            }
+          ],
+          "totalPaid": 2040
         }
       }
     },
@@ -271,9 +371,179 @@
               "amount": 120,
               "status": "paid",
               "timestamp": "2025-09-13T03:27:07.282Z"
+            },
+            {
+              "amount": 190,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:00:14.979Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:00:27.057Z"
+            },
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:03:09.326Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:04:14.462Z"
+            },
+            {
+              "amount": 380,
+              "status": "paid",
+              "timestamp": "2025-09-15T02:42:21.241Z"
+            },
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-09-22T22:25:51.552Z"
+            },
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-09-22T22:25:53.219Z"
+            },
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-09-22T22:25:54.158Z"
+            },
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-09-22T22:25:55.263Z"
+            },
+            {
+              "amount": 6300,
+              "status": "paid",
+              "timestamp": "2025-09-23T03:48:26.835Z"
             }
           ],
-          "totalPaid": 560
+          "totalPaid": 8614
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 1,
+              "status": "sent",
+              "timestamp": "2025-09-17T04:45:38.471Z"
+            },
+            {
+              "amount": 900,
+              "status": "paid",
+              "timestamp": "2025-09-19T19:22:35.351Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-20T22:01:31.520Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-20T22:08:26.044Z"
+            },
+            {
+              "amount": 1340,
+              "status": "paid",
+              "timestamp": "2025-09-20T22:27:03.823Z"
+            }
+          ],
+          "totalPaid": 2600
+        },
+        "2025-41": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-06T04:00:13.871Z"
+            },
+            {
+              "amount": 1250,
+              "status": "paid",
+              "timestamp": "2025-10-06T04:01:55.568Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-10-06T04:17:50.230Z"
+            },
+            {
+              "amount": 600,
+              "status": "paid",
+              "timestamp": "2025-10-10T02:59:42.257Z"
+            },
+            {
+              "amount": 1200,
+              "status": "paid",
+              "timestamp": "2025-10-10T03:00:12.601Z"
+            },
+            {
+              "amount": 180,
+              "status": "sent",
+              "timestamp": "2025-10-10T03:11:29.755Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-10T23:22:25.511Z"
+            }
+          ],
+          "totalPaid": 3920
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-09-22T19:07:16.420Z"
+            },
+            {
+              "amount": 1,
+              "status": "paid",
+              "timestamp": "2025-09-22T22:25:55.569Z"
+            },
+            {
+              "amount": 6300,
+              "status": "paid",
+              "timestamp": "2025-09-23T03:48:31.841Z"
+            }
+          ],
+          "totalPaid": 7261
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-10-02T17:23:35.956Z"
+            },
+            {
+              "amount": 240,
+              "status": "sent",
+              "timestamp": "2025-10-03T23:40:18.287Z"
+            },
+            {
+              "amount": 600,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:44:32.961Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-05T23:42:35.254Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-05T23:43:45.159Z"
+            }
+          ],
+          "totalPaid": 1440
         }
       }
     },
@@ -567,9 +837,134 @@
               "amount": 180,
               "status": "paid",
               "timestamp": "2025-09-10T18:26:33.237Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-13T21:25:30.085Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-09-13T21:39:31.610Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-14T16:37:06.335Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:24:15.204Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:24:44.290Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:52:17.382Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-12T04:42:28.032Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-12T04:42:49.097Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-12T04:52:35.667Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-12T05:26:37.218Z"
             }
           ],
-          "totalPaid": 180
+          "totalPaid": 2910
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-16T00:02:54.961Z"
+            }
+          ],
+          "totalPaid": 120
+        },
+        "2025-41": {
+          "invoices": [
+            {
+              "amount": 800,
+              "status": "paid",
+              "timestamp": "2025-10-12T01:59:19.950Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-12T02:01:33.062Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-12T02:04:53.692Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:24:19.474Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:24:48.660Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-12T03:52:21.771Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-12T04:42:32.579Z"
+            }
+          ],
+          "totalPaid": 2480
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 40,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:07:01.342Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:13:52.045Z"
+            },
+            {
+              "amount": 600,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:14:22.792Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:17:08.012Z"
+            }
+          ],
+          "totalPaid": 1270
         }
       }
     },
@@ -868,9 +1263,234 @@
               "amount": 432,
               "status": "paid",
               "timestamp": "2025-09-13T00:42:24.563Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-14T00:42:12.837Z"
+            },
+            {
+              "amount": 1,
+              "status": "sent",
+              "timestamp": "2025-09-14T16:24:09.601Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-14T16:42:54.925Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-14T16:46:51.333Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-22T19:20:19.741Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-22T19:25:43.944Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-10-28T00:39:49.657Z"
             }
           ],
-          "totalPaid": 8714
+          "totalPaid": 11424
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:23:50.128Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-18T13:40:20.809Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-18T13:50:33.886Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-18T13:54:13.080Z"
+            },
+            {
+              "amount": 432,
+              "status": "paid",
+              "timestamp": "2025-09-18T14:20:40.589Z"
+            },
+            {
+              "amount": 162,
+              "status": "paid",
+              "timestamp": "2025-09-18T14:22:06.762Z"
+            },
+            {
+              "amount": 486,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:07:25.870Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:13:34.709Z"
+            },
+            {
+              "amount": 770,
+              "status": "paid",
+              "timestamp": "2025-09-20T02:02:07.787Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-20T02:38:02.445Z"
+            },
+            {
+              "amount": 2500,
+              "status": "paid",
+              "timestamp": "2025-09-20T21:35:33.348Z"
+            },
+            {
+              "amount": 80,
+              "status": "paid",
+              "timestamp": "2025-09-20T21:37:31.014Z"
+            },
+            {
+              "amount": 216,
+              "status": "paid",
+              "timestamp": "2025-09-20T21:40:23.011Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-09-20T22:33:30.965Z"
+            },
+            {
+              "amount": 1440,
+              "status": "paid",
+              "timestamp": "2025-09-21T21:42:22.769Z"
+            }
+          ],
+          "totalPaid": 7966
+        },
+        "2025-41": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-06T17:06:27.160Z"
+            },
+            {
+              "amount": 4500,
+              "status": "paid",
+              "timestamp": "2025-10-06T19:24:28.863Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-08T01:23:26.983Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-08T01:24:29.760Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-10T03:36:55.219Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-10-10T16:59:53.735Z"
+            },
+            {
+              "amount": 600,
+              "status": "paid",
+              "timestamp": "2025-10-10T22:56:33.092Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-11T16:51:26.763Z"
+            }
+          ],
+          "totalPaid": 6930
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 306,
+              "status": "paid",
+              "timestamp": "2025-09-22T14:21:36.476Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-22T19:20:23.157Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-22T19:25:47.377Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-23T17:09:50.811Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-23T17:17:27.368Z"
+            },
+            {
+              "amount": 2400,
+              "status": "paid",
+              "timestamp": "2025-09-23T22:51:02.753Z"
+            }
+          ],
+          "totalPaid": 3726
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-10-02T03:26:14.572Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-02T13:47:20.073Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-02T16:25:15.810Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-02T16:39:53.620Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-02T19:37:09.569Z"
+            }
+          ],
+          "totalPaid": 1640
         }
       }
     },
@@ -1264,9 +1884,53 @@
               "amount": 180,
               "status": "sent",
               "timestamp": "2025-09-13T02:03:20.044Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-09-13T20:22:10.654Z"
+            },
+            {
+              "amount": 162,
+              "status": "paid",
+              "timestamp": "2025-09-14T22:38:03.208Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-14T23:09:00.513Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-14T23:33:25.554Z"
+            },
+            {
+              "amount": 438,
+              "status": "paid",
+              "timestamp": "2025-09-15T00:18:15.060Z"
             }
           ],
-          "totalPaid": 23260
+          "totalPaid": 24780
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-17T21:40:21.640Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-17T22:06:33.558Z"
+            }
+          ],
+          "totalPaid": 660
+        },
+        "2025-41": {
+          "invoices": [],
+          "totalPaid": 0
         }
       }
     },
@@ -1658,6 +2322,161 @@
             }
           ],
           "totalPaid": 4010
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-16T23:29:09.077Z"
+            },
+            {
+              "amount": 250,
+              "status": "paid",
+              "timestamp": "2025-09-16T23:29:23.213Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-16T23:34:07.757Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-16T23:35:10.615Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-09-16T23:48:16.828Z"
+            },
+            {
+              "amount": 8000,
+              "status": "paid",
+              "timestamp": "2025-09-17T00:16:57.922Z"
+            },
+            {
+              "amount": 440,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:06:41.748Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:09:28.031Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:11:32.998Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:18:11.562Z"
+            },
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:20:22.275Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-09-17T01:27:06.930Z"
+            },
+            {
+              "amount": 1600,
+              "status": "paid",
+              "timestamp": "2025-09-19T17:05:30.145Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-09-15T18:54:49.900Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-09-15T18:56:01.907Z"
+            }
+          ],
+          "totalPaid": 15010
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:17:57.915Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:24:54.140Z"
+            },
+            {
+              "amount": 1300,
+              "status": "paid",
+              "timestamp": "2025-09-24T01:44:53.986Z"
+            }
+          ],
+          "totalPaid": 1840
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:35:39.655Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:48:12.999Z"
+            },
+            {
+              "amount": 420,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:59:07.715Z"
+            },
+            {
+              "amount": 400,
+              "status": "paid",
+              "timestamp": "2025-10-03T23:59:43.978Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:01:57.303Z"
+            },
+            {
+              "amount": 3000,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:31:19.379Z"
+            },
+            {
+              "amount": 550,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:32:53.375Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:35:47.406Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:38:17.627Z"
+            },
+            {
+              "amount": 1500,
+              "status": "paid",
+              "timestamp": "2025-10-04T00:51:18.650Z"
+            }
+          ],
+          "totalPaid": 6990
         }
       }
     },
@@ -1746,9 +2565,14 @@
               "amount": 880,
               "status": "paid",
               "timestamp": "2025-09-13T00:17:56.311Z"
+            },
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-09-15T00:20:09.844Z"
             }
           ],
-          "totalPaid": 1060
+          "totalPaid": 2020
         }
       }
     },
@@ -1937,9 +2761,74 @@
               "amount": 2000,
               "status": "paid",
               "timestamp": "2025-09-13T02:44:35.068Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-09-13T22:03:20.941Z"
+            },
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-09-13T22:15:33.700Z"
+            },
+            {
+              "amount": 465,
+              "status": "paid",
+              "timestamp": "2025-09-14T22:01:39.191Z"
+            },
+            {
+              "amount": 1450,
+              "status": "paid",
+              "timestamp": "2025-09-15T00:24:45.217Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-09-15T01:24:39.092Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-15T01:24:56.428Z"
+            },
+            {
+              "amount": 450,
+              "status": "sent",
+              "timestamp": "2025-09-15T13:42:34.580Z"
             }
           ],
-          "totalPaid": 9390
+          "totalPaid": 13065
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 450,
+              "status": "paid",
+              "timestamp": "2025-09-15T13:42:38.756Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-15T17:01:55.095Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-15T17:03:46.085Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-15T17:04:27.342Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-15T17:05:29.095Z"
+            }
+          ],
+          "totalPaid": 2090
         }
       }
     },
@@ -2148,9 +3037,104 @@
               "amount": 180,
               "status": "paid",
               "timestamp": "2025-09-13T16:14:28.831Z"
+            },
+            {
+              "amount": 200,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:12:39.154Z"
+            },
+            {
+              "amount": 100,
+              "status": "sent",
+              "timestamp": "2025-09-13T23:14:34.714Z"
+            },
+            {
+              "amount": 700,
+              "status": "paid",
+              "timestamp": "2025-09-13T23:18:36.018Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-14T15:03:49.822Z"
+            },
+            {
+              "amount": 460,
+              "status": "paid",
+              "timestamp": "2025-09-14T16:04:08.756Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-09-14T16:07:50.236Z"
             }
           ],
-          "totalPaid": 11914
+          "totalPaid": 14284
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:37:40.701Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:38:27.093Z"
+            },
+            {
+              "amount": 720,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:46:57.587Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:53:13.548Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-09-17T18:22:28.586Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-17T18:22:38.516Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-17T18:32:28.597Z"
+            },
+            {
+              "amount": 4250,
+              "status": "paid",
+              "timestamp": "2025-09-18T18:01:33.372Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-18T19:12:38.540Z"
+            },
+            {
+              "amount": 2200,
+              "status": "paid",
+              "timestamp": "2025-09-18T19:14:21.457Z"
+            },
+            {
+              "amount": 960,
+              "status": "paid",
+              "timestamp": "2025-09-18T19:15:16.444Z"
+            },
+            {
+              "amount": 900,
+              "status": "paid",
+              "timestamp": "2025-09-19T16:45:30.059Z"
+            }
+          ],
+          "totalPaid": 12040
         }
       }
     },
@@ -2258,6 +3242,58 @@
         "2025-36": {
           "invoices": [],
           "totalPaid": 0
+        },
+        "2025-37": {
+          "invoices": [],
+          "totalPaid": 0
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:27:20.056Z"
+            },
+            {
+              "amount": 300,
+              "status": "paid",
+              "timestamp": "2025-09-17T17:28:58.739Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:23:50.640Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:25:38.570Z"
+            }
+          ],
+          "totalPaid": 1140
+        },
+        "2025-41": {
+          "invoices": [],
+          "totalPaid": 0
+        },
+        "2025-39": {
+          "invoices": [],
+          "totalPaid": 0
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-02T02:17:17.481Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-02T02:25:35.822Z"
+            }
+          ],
+          "totalPaid": 420
         }
       }
     },
@@ -2321,9 +3357,380 @@
           "totalPaid": 0
         }
       }
+    },
+    "IRW24807": {
+      "dni": "IRW24807",
+      "name": "Joaquin Delgado",
+      "weeklyData": {
+        "2025-37": {
+          "invoices": [
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-15T02:33:14.239Z"
+            },
+            {
+              "amount": 120,
+              "status": "sent",
+              "timestamp": "2025-09-15T02:33:33.716Z"
+            },
+            {
+              "amount": 408,
+              "status": "paid",
+              "timestamp": "2025-09-15T16:04:04.004Z"
+            }
+          ],
+          "totalPaid": 528
+        },
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 720,
+              "status": "paid",
+              "timestamp": "2025-09-16T15:50:46.571Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-16T16:12:50.544Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-17T23:31:44.565Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-09-18T14:32:51.739Z"
+            },
+            {
+              "amount": 420,
+              "status": "sent",
+              "timestamp": "2025-09-18T14:42:00.047Z"
+            },
+            {
+              "amount": 320,
+              "status": "paid",
+              "timestamp": "2025-09-19T00:20:00.079Z"
+            },
+            {
+              "amount": 1400,
+              "status": "paid",
+              "timestamp": "2025-09-20T02:35:12.118Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-20T02:37:59.281Z"
+            },
+            {
+              "amount": 280,
+              "status": "paid",
+              "timestamp": "2025-09-20T15:23:16.861Z"
+            },
+            {
+              "amount": 408,
+              "status": "paid",
+              "timestamp": "2025-09-15T16:04:08.539Z"
+            },
+            {
+              "amount": 380,
+              "status": "paid",
+              "timestamp": "2025-09-15T17:35:42.960Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-15T19:04:40.389Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-15T19:05:26.741Z"
+            }
+          ],
+          "totalPaid": 6158
+        },
+        "2025-41": {
+          "invoices": [
+            {
+              "amount": 250,
+              "status": "paid",
+              "timestamp": "2025-10-07T02:19:03.270Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-08T22:47:16.560Z"
+            },
+            {
+              "amount": 100,
+              "status": "paid",
+              "timestamp": "2025-10-08T22:52:52.592Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-09T16:36:45.216Z"
+            },
+            {
+              "amount": 160,
+              "status": "paid",
+              "timestamp": "2025-10-10T19:35:11.839Z"
+            }
+          ],
+          "totalPaid": 930
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-22T16:06:24.626Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-24T18:55:48.578Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-09-24T19:04:22.413Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-24T19:22:41.061Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-24T19:26:21.669Z"
+            }
+          ],
+          "totalPaid": 1800
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-04T01:15:02.870Z"
+            },
+            {
+              "amount": 500,
+              "status": "paid",
+              "timestamp": "2025-10-04T01:15:55.434Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-04T01:22:15.033Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-04T01:35:16.303Z"
+            }
+          ],
+          "totalPaid": 1280
+        }
+      }
+    },
+    "CCW84872": {
+      "dni": "CCW84872",
+      "name": "Ignacia Carmona",
+      "weeklyData": {
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-18T04:39:48.921Z"
+            }
+          ],
+          "totalPaid": 240
+        }
+      }
+    },
+    "RYJ73861": {
+      "dni": "RYJ73861",
+      "name": "DoVerman Smith",
+      "weeklyData": {
+        "2025-38": {
+          "invoices": [
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:32:11.081Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:42:47.323Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:53:39.186Z"
+            },
+            {
+              "amount": 1100,
+              "status": "paid",
+              "timestamp": "2025-09-19T22:56:23.420Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-20T15:08:44.980Z"
+            }
+          ],
+          "totalPaid": 2120
+        },
+        "2025-39": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-09-23T21:34:23.671Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-09-23T21:56:19.953Z"
+            },
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-09-23T22:22:10.378Z"
+            },
+            {
+              "amount": 162,
+              "status": "paid",
+              "timestamp": "2025-09-23T22:39:54.929Z"
+            }
+          ],
+          "totalPaid": 942
+        }
+      }
+    },
+    "SQQ81426": {
+      "dni": "SQQ81426",
+      "name": "Ale Rodriguez",
+      "weeklyData": {
+        "2025-41": {
+          "invoices": [],
+          "totalPaid": 0
+        },
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-06T01:45:23.885Z"
+            }
+          ],
+          "totalPaid": 240
+        }
+      }
+    },
+    "RJE69213": {
+      "dni": "RJE69213",
+      "name": "Alin Pian",
+      "weeklyData": {
+        "2025-40": {
+          "invoices": [],
+          "totalPaid": 0
+        }
+      }
+    },
+    "GBP84511": {
+      "dni": "GBP84511",
+      "name": "Florin Pian",
+      "weeklyData": {
+        "2025-40": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-02T02:56:11.854Z"
+            },
+            {
+              "amount": 530,
+              "status": "paid",
+              "timestamp": "2025-10-02T19:02:30.340Z"
+            }
+          ],
+          "totalPaid": 710
+        }
+      }
+    },
+    "PBP88002": {
+      "dni": "PBP88002",
+      "name": "Empleado PBP88002",
+      "weeklyData": {
+        "2025-37": {
+          "invoices": [
+            {
+              "amount": 240,
+              "status": "paid",
+              "timestamp": "2025-10-12T05:48:26.037Z"
+            },
+            {
+              "amount": 120,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:30:40.481Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:45:06.763Z"
+            }
+          ],
+          "totalPaid": 540
+        }
+      }
+    },
+    "QJF30481": {
+      "dni": "QJF30481",
+      "name": "Empleado QJF30481",
+      "weeklyData": {
+        "2025-37": {
+          "invoices": [
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:15:53.992Z"
+            },
+            {
+              "amount": 480,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:27:45.000Z"
+            },
+            {
+              "amount": 180,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:37:39.421Z"
+            },
+            {
+              "amount": 540,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:43:19.967Z"
+            },
+            {
+              "amount": 360,
+              "status": "paid",
+              "timestamp": "2025-10-12T06:49:53.071Z"
+            }
+          ],
+          "totalPaid": 1740
+        }
+      }
     }
   },
   "bonusPercentage": 15,
   "currentWeek": "2025-37",
-  "savedAt": "2025-09-13T19:59:50.075Z"
+  "savedAt": "2025-10-28T00:39:54.628Z"
 }

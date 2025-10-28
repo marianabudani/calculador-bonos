@@ -34,8 +34,9 @@ class HelperCommands {
     }
 
     async handleHelp(message) {
-        const embed = new EmbedBuilder()
-            .setTitle('📖 Comandos del Bot de Bonos Semanales')
+        // PRIMER EMBED: Comandos principales
+        const embed1 = new EmbedBuilder()
+            .setTitle('📖 Comandos del Bot de Bonos Semanales - Parte 1/3')
             .setColor('#ff9900')
             .addFields(
                 // COMANDOS DE BONOS
@@ -59,34 +60,77 @@ class HelperCommands {
                 { name: '🔍 **ESCANEO**', value: '\u200b', inline: false },
                 { name: '!scanfecha [inicio] [fin]', value: 'Escanea por rango de fechas (DD/MM/AAAA)', inline: true },
                 { name: '!scan [número]', value: 'Escanea mensajes anteriores', inline: true },
-                { name: '!procesar', value: 'Procesa logs pegados manualmente', inline: true },
-                
-                // COMANDOS DE INVENTARIO
-                { name: '📦 **INVENTARIO**', value: '\u200b', inline: false },
+                { name: '!procesar', value: 'Procesa logs pegados manualmente', inline: true }
+            );
+
+        // SEGUNDO EMBED: Comandos de inventario
+        const embed2 = new EmbedBuilder()
+            .setTitle('📖 Comandos del Bot de Bonos Semanales - Parte 2/3')
+            .setColor('#ff9900')
+            .addFields(
+                // COMANDOS DE INVENTARIO BÁSICOS
+                { name: '📦 **INVENTARIO BÁSICO**', value: '\u200b', inline: false },
                 { name: '!inventario', value: 'Muestra stock global actual', inline: true },
                 { name: '!inventario-empleados', value: 'Lista todos los empleados con inventario', inline: true },
                 { name: '!inventario-empleado <DNI>', value: 'Inventario específico de un empleado', inline: true },
                 { name: '!valorretiros', value: 'Valor total retirado en pesos', inline: true },
                 { name: '!inventario-top [número]', value: 'Top empleados por valor retirado', inline: true },
+                
+                // ANÁLISIS DE INVENTARIO
+                { name: '📊 **ANÁLISIS DE INVENTARIO**', value: '\u200b', inline: false },
                 { name: '!inventario-stats', value: 'Estadísticas generales de inventario', inline: true },
                 { name: '!inventario-item [nombre]', value: 'Estadísticas de un item específico', inline: true },
                 { name: '!precios', value: 'Lista de precios de items auditados', inline: true },
                 { name: '!procesarlog', value: 'Procesa bloque de log de inventario', inline: true },
                 
+                // COMANDOS DE STOCK BASE
+                { name: '📋 **STOCK BASE**', value: '\u200b', inline: false },
+                { name: '!inventario-setbase', value: 'Configura stock inicial (Item1:cantidad1)', inline: true },
+                { name: '!inventario-loadbase', value: 'Carga stock desde JSON pegado', inline: true },
+                { name: '!inventario-comparar', value: 'Compara stock actual vs base', inline: true },
+                
                 // COMANDOS ADMINISTRATIVOS
                 { name: '🔧 **ADMINISTRACIÓN**', value: '\u200b', inline: false },
                 { name: '!inventario-reset', value: '⚠️ Resetea completamente el inventario', inline: true },
-                { name: '!inventario-export', value: 'Exporta datos de inventario', inline: true },
-                { name: '!test-inventory', value: '🧪 Prueba el parsing de inventario', inline: true },
-                
-                // COMANDOS DE AYUDA
+                { name: '!inventario-export', value: 'Exporta datos de inventario', inline: true }
+            );
+
+        // TERCER EMBED: Información y ejemplos
+        const embed3 = new EmbedBuilder()
+            .setTitle('📖 Comandos del Bot de Bonos Semanales - Parte 3/3')
+            .setColor('#ff9900')
+            .addFields(
+                // COMANDOS DE INFORMACIÓN
                 { name: 'ℹ️ **INFORMACIÓN**', value: '\u200b', inline: false },
                 { name: '!semana', value: 'Información de la semana actual', inline: true },
-                { name: '!ayuda', value: 'Muestra esta ayuda', inline: true }
+                { name: '!ayuda', value: 'Muestra esta ayuda', inline: true },
+                
+                // EJEMPLOS DE USO
+                { name: '💡 **EJEMPLOS DE USO**', value: '\u200b', inline: false },
+                { 
+                    name: 'Escanear por fechas', 
+                    value: '`!scanfecha 01/09/2025 12/09/2025`', 
+                    inline: false 
+                },
+                { 
+                    name: 'Ver inventario de empleado', 
+                    value: '`!inventario-empleado ABC123`', 
+                    inline: false 
+                },
+                { 
+                    name: 'Configurar canal de logs', 
+                    value: '`!setchannel logs 1234567890123456789`', 
+                    inline: false 
+                }
             )
-            .setFooter({ text: 'Sistema de bonos semanales (Lunes a Domingo) + Control de Inventario' });
+            .setFooter({ 
+                text: 'Sistema de bonos semanales (Lunes a Domingo) + Control de Inventario\nUsa !inventario-help para ayuda detallada de inventario' 
+            });
 
-        await message.reply({ embeds: [embed] });
+        // Enviar los tres embeds
+        await message.reply({ embeds: [embed1] });
+        await message.channel.send({ embeds: [embed2] });
+        await message.channel.send({ embeds: [embed3] });
     }
 
     async handleInventoryHelp(message) {
@@ -128,7 +172,14 @@ class HelperCommands {
                     name: '!inventario-stats', 
                     value: 'Estadísticas generales del sistema:\n• Total de movimientos\n• Empleados únicos\n• Items únicos\n• Valor total\nEjemplo: `!inventario-stats`', 
                     inline: false 
-                },
+                }
+            );
+
+        // SEGUNDO EMBED para el resto de la información
+        const embed2 = new EmbedBuilder()
+            .setTitle('📦 Comandos de Inventario - Guía Detallada (2/2)')
+            .setColor('#e67e22')
+            .addFields(
                 { 
                     name: '!inventario-item [nombre]', 
                     value: 'Estadísticas detalladas de un item específico:\n• Stock actual\n• Total depositado/retirado\n• Top empleados que lo retiran\nEjemplo: `!inventario-item Hamburguesa`\nSin nombre: muestra stats de todos los items', 
@@ -136,7 +187,7 @@ class HelperCommands {
                 },
 
                 // PROCESAMIENTO
-                { name: '🔄 **PROCESAMIENTO DE LOGS**', value: '\u200b', inline: false },
+                { name: '📄 **PROCESAMIENTO DE LOGS**', value: '\u200b', inline: false },
                 { 
                     name: '!procesarlog', 
                     value: 'Procesa múltiples líneas de log pegadas después del comando.\nFormato esperado:\n`!procesarlog`\n`[DNI] Nombre ha retirado x5 Item.`\n`[DNI] Nombre ha guardado x3 Item.`', 
@@ -164,6 +215,7 @@ class HelperCommands {
             .setFooter({ text: 'Usa !precios para ver la lista completa de precios actualizados' });
 
         await message.reply({ embeds: [embed] });
+        await message.channel.send({ embeds: [embed2] });
     }
 }
 

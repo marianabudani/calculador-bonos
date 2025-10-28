@@ -366,7 +366,62 @@ class MessageHandler {
                     await message.reply('❌ Servicio de inventario no disponible.');
                 }
                 break;
+            case 'inventario-setbase':
+                if (this.bot.inventoryService) {
+                    await this.bot.inventoryService.handleSetBaseCommand(message, args);
+                } else {
+                    await message.reply('❌ Servicio de inventario no disponible.');
+                }
+                break;
 
+            case 'inventario-loadbase':
+                if (this.bot.inventoryService) {
+                    await this.bot.inventoryService.handleLoadBaseCommand(message);
+                } else {
+                    await message.reply('❌ Servicio de inventario no disponible.');
+                }
+                break;
+
+            case 'inventario-baseconfig':
+                if (this.bot.inventoryService) {
+                    await this.bot.inventoryService.showBaseStockConfiguration(message);
+                } else {
+                    await message.reply('❌ Servicio de inventario no disponible.');
+                }
+                break;
+
+                case 'inventario-comparar':
+                    if (this.bot.inventoryService) {
+                        await this.bot.inventoryService.showStockComparison(message);
+                    } else {
+                        await message.reply('❌ Servicio de inventario no disponible.');
+                    }
+                    break;
+                case 'inventario-empleado':
+                    if (this.bot.inventoryService && args[1]) {
+                        await this.bot.inventoryService.showEmployeeWeeklyInventory(message, args[1], args[2]);
+                    } else if (!this.bot.inventoryService) {
+                        await message.reply('❌ Servicio de inventario no disponible.');
+                    } else {
+                        await message.reply('❌ Uso: `!inventario-empleado [DNI] [semana_opcional]`\nEjemplo: `!inventario-empleado ABC123 2025-37`');
+                    }
+                    break;
+
+                case 'inventario-export':
+                    if (this.bot.inventoryService) {
+                        await this.bot.inventoryService.exportInventoryData(message);
+                    } else {
+                        await message.reply('❌ Servicio de inventario no disponible.');
+                    }
+                    break;
+
+                case 'inventario-top':
+                    if (this.bot.inventoryService) {
+                        await this.bot.inventoryService.showTopWithdrawals(message, args[1]);
+                    } else {
+                        await message.reply('❌ Servicio de inventario no disponible.');
+                    }
+                    break;
             case 'valorretiros':
                 if (this.bot.inventoryService) {
                     await this.bot.inventoryService.calculateWithdrawValue(message);
@@ -457,6 +512,7 @@ class MessageHandler {
         return this.bot.config.commandChannelIds.length === 0 || 
                this.bot.config.commandChannelIds.includes(channelId);
     }
+    
 }
 
 module.exports = MessageHandler;
